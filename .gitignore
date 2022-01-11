@@ -1,0 +1,9 @@
+*.o
+sum
+cmake-build-debug
+.vscode
+.xcodeproj
+sum.xcodeproj/xcuserdata
+*.cpp~
+.DS_Store
+CMakeLists.txt
