@@ -1,0 +1,11 @@
+#include "cmdline.h"
+#include <iostream>
+
+int main(int argc, char **argv)
+{
+
+    use_arguments(argc, argv);
+
+    return 0;
+
+}
