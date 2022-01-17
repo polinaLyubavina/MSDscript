@@ -1,6 +1,8 @@
 #include "cmdline.h"
 #include <iostream>
 #include <string.h>
+#define CATCH_CONFIG_RUNNER
+#include "catch.h"
 
 
 // definition for use_arguments
@@ -18,7 +20,8 @@ void use_arguments(int argc, char **argv) {
         }
 
         else if(argvalue1.compare(test) == 0) {
-            std::cout << "Tests passed\n";
+            // std::cout << "Tests passed\n";
+            Catch::Session().run(1, argv);
         }
 
         else {

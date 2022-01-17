@@ -6,29 +6,37 @@ class Expr {
 };
 
 class Num : public Expr {
-    int val;
+    public:
+        int val;
 
-    bool equals(Expr* e);
+        Num(int val); 
+        bool equals(Expr* e);
 }; 
 
 class Add : public Expr {
-    Expr* lhs;
-    Expr* rhs;
+    public:
+        Expr* lhs;
+        Expr* rhs;
 
-    bool equals(Expr* e);
+        Add(Expr* lhs, Expr* rhs);
+        bool equals(Expr* e);
 };
 
 class Mult : public Expr {
-    Expr* lhs;
-    Expr* rhs;
+    public:
+        Expr* lhs;
+        Expr* rhs;
 
-    bool equals(Expr* e);
+        Mult(Expr* lhs, Expr* rhs);
+        bool equals(Expr* e);
 };
 
 class Var : public Expr {
-    std::string val;
-    Expr* lhs;
-    Expr* rhs;
+    public:
+        std::string val;
+        Expr* lhs;
+        Expr* rhs;
 
-    bool equals(Expr* e);
+        Var(Expr* lhs, Expr* rhs); 
+        bool equals(Expr* e);
 };
