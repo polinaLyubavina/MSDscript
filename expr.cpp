@@ -9,13 +9,13 @@ Num::Num(int val){
 };
 
 bool Num::equals(Expr* e){
-    // if (e is num) {
-    //     return this->val == e->val;
-    // } else {
-    //     e->equals(this);
-    // }
-
-    return false;
+    Num* e_use = dynamic_cast<Num*>(e);
+    if(e_use == nullptr) {
+        return false;
+    }
+    else {
+        return ((this->val == e_use->val));
+    }
 }; 
 
 /*
@@ -27,7 +27,13 @@ Add::Add(Expr* lhs, Expr*rhs) {
 };
 
 bool Add::equals(Expr* e){
-    return false;
+    Add* e_use = dynamic_cast<Add*>(e);
+    if(e_use == nullptr) {
+        return false;
+    }
+    else {
+        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+    }
 };
 
 /*
@@ -39,7 +45,13 @@ Mult::Mult(Expr* lhs, Expr* rhs) {
 }
 
 bool Mult::equals(Expr* e){
-    return false;
+    Mult* e_use = dynamic_cast<Mult*>(e);
+    if(e_use == nullptr) {
+        return false;
+    }
+    else {
+        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+    }
 };
 
 /*
@@ -51,7 +63,13 @@ Var::Var(Expr* lhs, Expr* rhs) {
 };
 
 bool Var::equals(Expr* e){
-    return false; 
+    Var* e_use = dynamic_cast<Var*>(e);
+    if(e_use == nullptr) {
+        return false;
+    }
+    else {
+        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+    }
 };
 
 /*
@@ -59,7 +77,7 @@ TESTS
 */
 TEST_CASE("equals") {
     CHECK((new Num(5))->equals(new Num(7)) == false);
-    // CHECK(new Add(new Num(484)).equals(new Num(123)) == false);
-    // CHECK(new Mult(new Num(20)).equals(new Num(60)) == false);
-    // CHECK(new Var(new Num("200")).equals(new Add(new Num("300"))) == false);
+    CHECK((new Add(new Num(5)),(new Num(7)))->equals(new Add(new Num(5)),(new Num(7))) == true);
+    CHECK((new Mult(new Num(5)),(new Num(7)))->equals(new Mult(new Num(5)),(new Num(7))) == true);
+    CHECK((new Add(new Var("5")),(new Num("7")))->equals(new Var(new Num("5")),(new Num("7"))) == true);
 }; 
