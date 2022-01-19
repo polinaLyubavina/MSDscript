@@ -77,12 +77,21 @@ bool Var::equals(Expr* e){
 TESTS
 */
 TEST_CASE("equals") {
+    /*
+    Num Tests
+    */
     CHECK((new Num(5))->equals(new Num(7)) == false);
     CHECK((new Add(new Num(5), new Num(7)))->equals(new Add(new Num(5), new Num(7))) == true);
-    // CHECK((new Add(new Num(7), new Num(5)))->equals(new Add(new Num(5), new Num(7))) == true);
     CHECK((new Mult(new Num(5), new Num(7)))->equals(new Mult(new Num(5), new Num(7))) == true);
+    /*
+    Num Tests where lhs and rhs don't == on both sides
+    */
+    // CHECK((new Add(new Num(7), new Num(5)))->equals(new Add(new Num(5), new Num(7))) == true);
 
+    /*
+    Var Tests
+    */
     CHECK((new Var("5"))->equals(new Var("7")) == false);
-    // CHECK((new Add(new Var("cookie"), new Var("batter")))->equals(new Add(new Var("cookie"), new Var("batter"))) == true);
-    // CHECK((new Mult(new Var("5"), new Var("7")))->equals(new Mult(new Var("5"), new Var("7"))) == true);
+    CHECK((new Add(new Var("cookie"), new Var("batter")))->equals(new Add(new Var("cookie"), new Var("batter"))) == true);
+    CHECK((new Mult(new Var("5"), new Var("7")))->equals(new Mult(new Var("5"), new Var("7"))) == true);
 }; 
