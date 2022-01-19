@@ -2,7 +2,8 @@
 #include <string.h>
 
 class Expr {
-    virtual bool equals(Expr* e) = 0; 
+    public:
+        virtual bool equals(Expr* e) = 0; 
 };
 
 class Num : public Expr {

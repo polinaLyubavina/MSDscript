@@ -14,7 +14,7 @@ bool Num::equals(Expr* e){
         return false;
     }
     else {
-        return ((this->val == e_use->val));
+        return this->val == e_use->val;
     }
 }; 
 
@@ -32,7 +32,8 @@ bool Add::equals(Expr* e){
         return false;
     }
     else {
-        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        // return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        return (this->lhs)->equals(e_use->lhs) && (this->rhs)->equals(e_use->rhs);
     }
 };
 
@@ -40,7 +41,7 @@ bool Add::equals(Expr* e){
 Mult
 */
 Mult::Mult(Expr* lhs, Expr* rhs) {
-    this-> lhs = lhs;
+    this->lhs = lhs;
     this->rhs = rhs;
 }
 
@@ -50,7 +51,8 @@ bool Mult::equals(Expr* e){
         return false;
     }
     else {
-        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        // return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        return (this->lhs)->equals(e_use->lhs) && (this->rhs)->equals(e_use->rhs);
     }
 };
 
@@ -68,7 +70,8 @@ bool Var::equals(Expr* e){
         return false;
     }
     else {
-        return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        // return ((this->lhs == e_use->lhs) && (this->rhs == e_use->rhs));
+        return (this->lhs)->equals(e_use->lhs) && (this->rhs)->equals(e_use->rhs);
     }
 };
 
@@ -77,7 +80,10 @@ TESTS
 */
 TEST_CASE("equals") {
     CHECK((new Num(5))->equals(new Num(7)) == false);
-    CHECK((new Add(new Num(5)),(new Num(7)))->equals(new Add(new Num(5)),(new Num(7))) == true);
-    CHECK((new Mult(new Num(5)),(new Num(7)))->equals(new Mult(new Num(5)),(new Num(7))) == true);
-    CHECK((new Add(new Var("5")),(new Num("7")))->equals(new Var(new Num("5")),(new Num("7"))) == true);
+    CHECK((new Add(new Num(5), new Num(7)))->equals(new Add(new Num(5), new Num(7))) == true);
+    CHECK((new Mult(new Num(5), new Num(7)))->equals(new Mult(new Num(5), new Num(7))) == true);
+
+    // CHECK((new Var("5"))->equals(new Var("7")) == false);
+    // CHECK((new Add(new Var("cookie"), new Var("batter")))->equals(new Add(new Var("cookie"), new Var("batter"))) == true);
+    // CHECK((new Mult(new Var("5"), new Var("7")))->equals(new Mult(new Var("5"), new Var("7"))) == true);
 }; 
