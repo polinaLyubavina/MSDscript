@@ -7,4 +7,5 @@ sum.xcodeproj/xcuserdata
 *.cpp~
 .DS_Store
 CMakeLists.txt
+a.out
 msdscript
