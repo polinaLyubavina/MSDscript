@@ -35,9 +35,7 @@ class Mult : public Expr {
 class Var : public Expr {
     public:
         std::string val;
-        Expr* lhs;
-        Expr* rhs;
 
-        Var(Expr* lhs, Expr* rhs); 
+        Var(std::string val); 
         bool equals(Expr* e);
 };
