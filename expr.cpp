@@ -28,6 +28,9 @@ bool Num::has_variable() {
 };
 
 Expr* Num::subst(std::string var, Expr* e) {
+    /*
+    there is no variable to substitute so you return the number
+    */
     return this;
 };
 
@@ -120,6 +123,9 @@ bool Var::has_variable() {
 
 Expr* Var::subst(std::string var, Expr* e) {
     if(this->val == var) {
+        /*
+        if they match return e - e that you want to replace val/var with
+        */
         return e;
     }
     else {
