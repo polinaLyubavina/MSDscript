@@ -27,8 +27,8 @@ bool Num::has_variable() {
     return false;
 };
 
-Expr* Num::subst(std::string, Expr*) {
-
+Expr* Num::subst(std::string var, Expr* e) {
+    return this;
 };
 
 /******************
@@ -55,11 +55,11 @@ int Add::interp() {
 };
 
 bool Add::has_variable() {
-    return false; 
+    return (this->lhs)->has_variable() || (this->rhs)->has_variable(); 
 };
 
-Expr* Add::subst(std::string, Expr*) {
-
+Expr* Add::subst(std::string var, Expr* e) {
+    return new Add((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
 };
 
 /******************
@@ -86,11 +86,11 @@ int Mult::interp() {
 };
 
 bool Mult::has_variable() {
-    return false; 
+    return (this->lhs)->has_variable() || (this->rhs)->has_variable(); 
 };
 
-Expr* Mult::subst(std::string, Expr*) {
-
+Expr* Mult::subst(std::string var, Expr* e) {
+    return new Mult((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
 };
 
 /******************
@@ -118,8 +118,13 @@ bool Var::has_variable() {
     return true; 
 };
 
-Expr* Var::subst(std::string, Expr*) {
-    
+Expr* Var::subst(std::string var, Expr* e) {
+    if(this->val == var) {
+        return e;
+    }
+    else {
+        return this;
+    }
 };
 
 /******************
@@ -131,6 +136,7 @@ TEST_CASE("equals") {
     *******************/
     CHECK((new Num(5))->equals(new Num(7)) == false);
     CHECK((new Add(new Num(5), new Num(7)))->equals(new Add(new Num(5), new Num(7))) == true);
+    // CHECK((new Add(new Num(5), new Num(7)))->equals(new Add(new Num(7), new Num(5))) == true);
     CHECK((new Mult(new Num(5), new Num(7)))->equals(new Mult(new Num(5), new Num(7))) == true);
 
     /******************
@@ -163,7 +169,12 @@ TEST_CASE("equals") {
     /******************
     has_variable Tests
     *******************/
-    // CHECK((new Var("5"))->equals(new Var("7")) == false);
+    CHECK((new Var("5"))->has_variable() == true);
+    CHECK((new Num(7))->has_variable() == false);
+    CHECK((new Add(new Num(7), new Var("7")))->has_variable() == true);
+    CHECK((new Mult(new Num(7), new Var("7")))->has_variable() == true);
+    CHECK((new Add(new Num(7), new Num(7)))->has_variable() == false);
+    CHECK((new Mult(new Num(7), new Num(7)))->has_variable() == false);
 
     /******************
     Subst Tests
