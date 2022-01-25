@@ -34,6 +34,14 @@ Expr* Num::subst(std::string var, Expr* e) {
     return this;
 };
 
+std::ostream& Num::print(std::ostream&) {
+
+};
+
+std::ostream& Num::pretty_print(std::ostream&) {
+
+};
+
 /******************
 Add
 *******************/
@@ -65,6 +73,14 @@ Expr* Add::subst(std::string var, Expr* e) {
     return new Add((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
 };
 
+std::ostream& Add::print(std::ostream&) {
+
+};
+
+std::ostream& Add::pretty_print(std::ostream&) {
+
+};
+
 /******************
 Mult
 *******************/
@@ -94,6 +110,14 @@ bool Mult::has_variable() {
 
 Expr* Mult::subst(std::string var, Expr* e) {
     return new Mult((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
+};
+
+std::ostream& Mult::print(std::ostream&) {
+
+};
+
+std::ostream& Mult::pretty_print(std::ostream&) {
+
 };
 
 /******************
@@ -131,6 +155,14 @@ Expr* Var::subst(std::string var, Expr* e) {
     else {
         return this;
     }
+};
+
+std::ostream& Var::print(std::ostream&) {
+
+};
+
+std::ostream& Var::pretty_print(std::ostream&) {
+
 };
 
 /******************
