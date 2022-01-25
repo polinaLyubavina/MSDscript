@@ -1,14 +1,25 @@
 #include <iostream>
 #include <string.h>
 
+typedef enum {
+  prec_none,      // = 0
+  prec_add,       // = 1
+  prec_mult       // = 2
+} precedence_t;
+
 class Expr {
     public:
         virtual bool equals(Expr* e) = 0; 
         virtual int interp() = 0; 
+
         virtual bool has_variable() = 0;
         virtual Expr* subst(std::string var, Expr* e) = 0;
+
         virtual void print(std::ostream& out) = 0; 
         virtual void pretty_print(std::ostream& out) = 0; 
+        virtual void pretty_print_at(std::ostream& out) = 0;
+
+        virtual std::string to_string() = 0;
 };
 
 class Num : public Expr {
@@ -22,6 +33,8 @@ class Num : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
+        void pretty_print_at(std::ostream& out);
+        std::string to_string();
 }; 
 
 class Add : public Expr {
@@ -36,6 +49,8 @@ class Add : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
+        void pretty_print_at(std::ostream& out);
+        std::string to_string();
 };
 
 class Mult : public Expr {
@@ -50,6 +65,8 @@ class Mult : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
+        void pretty_print_at(std::ostream& out);
+        std::string to_string();
 };
 
 class Var : public Expr {
@@ -63,4 +80,6 @@ class Var : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
+        void pretty_print_at(std::ostream& out);
+        std::string to_string();
 };

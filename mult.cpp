@@ -1,6 +1,7 @@
 #include "expr.h"
 #include "catch.h"
 #include <stdexcept>
+#include <sstream>
 
 /******************
  *      MULT
@@ -35,9 +36,27 @@ Expr* Mult::subst(std::string var, Expr* e) {
 };
 
 void Mult::print(std::ostream& out) {
-
+    out << "(";
+    lhs -> print(out);
+    out << "*";
+    rhs -> print(out);
+    out << ")";
 };
 
 void Mult::pretty_print(std::ostream& out) {
-
+    out << "(";
+    lhs -> print(out);
+    out << " * ";
+    rhs -> print(out);
+    out << ")";
 };
+
+std::string Mult::to_string() {
+    std::stringstream out;
+    this -> print(out);
+    return out.str();
+}
+
+void Mult::pretty_print_at(std::ostream& out){
+    //
+}

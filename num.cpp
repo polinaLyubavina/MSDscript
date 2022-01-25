@@ -1,6 +1,7 @@
 #include "expr.h"
 #include "catch.h"
 #include <stdexcept>
+#include <sstream>
 
 /******************
  *      NUM
@@ -42,3 +43,13 @@ void Num::print(std::ostream& out) {
 void Num::pretty_print(std::ostream& out) {
     out << this -> val; 
 };
+
+std::string Num::to_string() {
+    std::stringstream out;
+    this -> print(out);
+    return out.str();
+}
+
+void Num::pretty_print_at(std::ostream& out){
+    //
+}

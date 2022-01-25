@@ -1,6 +1,7 @@
 #include "expr.h"
 #include "catch.h"
 #include <stdexcept>
+#include <sstream>
 
 /******************
  *      VAR
@@ -47,3 +48,13 @@ void Var::print(std::ostream& out) {
 void Var::pretty_print(std::ostream& out) {
     std::cout << this; 
 };
+
+std::string Var::to_string() {
+    std::stringstream out;
+    this -> print(out);
+    return out.str();
+}
+
+void Var::pretty_print_at(std::ostream& out){
+    //
+}

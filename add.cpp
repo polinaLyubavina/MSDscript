@@ -1,5 +1,6 @@
 #include "expr.h"
 #include "catch.h"
+#include <sstream>
 #include <stdexcept>
 
 /******************
@@ -43,5 +44,19 @@ void Add::print(std::ostream& out) {
 };
 
 void Add::pretty_print(std::ostream& out) {
-
+    out << "(";
+    lhs -> print(out);
+    out << " + ";
+    rhs -> print(out);
+    out << ")";
 };
+
+std::string Add::to_string() {
+    std::stringstream out;
+    this -> print(out);
+    return out.str();
+}
+
+void Add::pretty_print_at(std::ostream& out){
+    //
+}

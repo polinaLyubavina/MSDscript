@@ -1,6 +1,8 @@
 #include "expr.h"
 #include "catch.h"
 #include <stdexcept>
+#include <iostream>
+#include <sstream>
 
 /******************
  *     TESTS
@@ -63,6 +65,7 @@ TEST_CASE("equals") {
     /******************
     Print and Pretty_Print Tests
     *******************/
-    (new Num(5)) -> print(std::cout); 
+    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() == "(5+(2+1))");
+    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() != "(7+(2+1))"); 
 
 };
