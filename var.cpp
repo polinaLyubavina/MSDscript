@@ -55,6 +55,6 @@ std::string Var::to_string() {
     return out.str();
 }
 
-void Var::pretty_print_at(std::ostream& out){
-    //
+precedence_t Var::pretty_print_at(std::ostream& out){
+    return this->val;
 }

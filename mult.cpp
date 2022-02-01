@@ -57,6 +57,6 @@ std::string Mult::to_string() {
     return out.str();
 }
 
-void Mult::pretty_print_at(std::ostream& out){
-    //
+precedence_t Mult::pretty_print_at(std::ostream& out){
+    return prec_mult; 
 }

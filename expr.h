@@ -17,7 +17,7 @@ class Expr {
 
         virtual void print(std::ostream& out) = 0; 
         virtual void pretty_print(std::ostream& out) = 0; 
-        virtual void pretty_print_at(std::ostream& out) = 0;
+        virtual precedence_t pretty_print_at(std::ostream& out) = 0;
 
         virtual std::string to_string() = 0;
 };
@@ -33,7 +33,7 @@ class Num : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        void pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at(std::ostream& out);
         std::string to_string();
 }; 
 
@@ -49,7 +49,7 @@ class Add : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        void pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at(std::ostream& out);
         std::string to_string();
 };
 
@@ -65,7 +65,7 @@ class Mult : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        void pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at(std::ostream& out);
         std::string to_string();
 };
 
@@ -80,6 +80,24 @@ class Var : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        void pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at(std::ostream& out);
+        std::string to_string();
+};
+
+class _let : public Expr {
+    public:
+        std::string name;
+        Expr* val; 
+        Expr* rhs;
+
+        _let(std::string name, Expr* val, Expr* rhs);
+
+        bool equals(Expr* e);
+        int interp(); 
+        bool has_variable();
+        Expr* subst(std::string var, Expr* e);
+        void print(std::ostream& out);
+        void pretty_print(std::ostream& out);
+        precedence_t pretty_print_at(std::ostream& out);
         std::string to_string();
 };

@@ -50,6 +50,7 @@ std::string Num::to_string() {
     return out.str();
 }
 
-void Num::pretty_print_at(std::ostream& out){
-    //
+precedence_t Num::pretty_print_at(std::ostream& out){
+    // return this->val; 
 }
+

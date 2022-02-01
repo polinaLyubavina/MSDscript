@@ -44,11 +44,12 @@ void Add::print(std::ostream& out) {
 };
 
 void Add::pretty_print(std::ostream& out) {
-    out << "(";
-    lhs -> print(out);
-    out << " + ";
-    rhs -> print(out);
-    out << ")";
+    // out << "(";
+    // lhs -> print(out);
+    // out << " + ";
+    // rhs -> print(out);
+    // out << ")";
+    std::out pretty_print_at(std::ostream& out); 
 };
 
 std::string Add::to_string() {
@@ -57,6 +58,6 @@ std::string Add::to_string() {
     return out.str();
 }
 
-void Add::pretty_print_at(std::ostream& out){
-    //
+precedence_t Add::pretty_print_at(std::ostream& out){
+    return prec_add;
 }
