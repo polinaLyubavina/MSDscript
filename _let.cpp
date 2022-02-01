@@ -3,6 +3,10 @@
 #include <stdexcept>
 #include <sstream>
 
+/******************
+ *     _let
+*******************/
+
 _let::_let(std::string name, Expr* val, Expr * rhs) {
     this->name = name;
     this->val = val;
@@ -26,11 +30,11 @@ Expr* _let::subst(std::string var, Expr* e) {
 };
 
 void _let::print(std::ostream& out) {
-    std::cout << "( _let " << name << "=" << val << " _in " << rhs->print() << ")";
+    // std::cout << "( _let " << name << "=" << val << " _in " << rhs->print() << ")";
 };
 
 void _let::pretty_print(std::ostream& out) {
-    std::cout << "( _let " << name << " = " << val << "\n_in " << rhs->print() << ")";
+    // std::cout << "( _let " << name << " = " << val << "\n_in " << rhs->print() << ")";
 };
 
 std::string _let::to_string() {
@@ -40,5 +44,5 @@ std::string _let::to_string() {
 }
 
 precedence_t _let::pretty_print_at(std::ostream& out){
-    return this -> val; 
+    // return this -> val; 
 }

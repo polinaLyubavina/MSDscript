@@ -66,6 +66,11 @@ TEST_CASE("equals") {
     Print and Pretty_Print Tests
     *******************/
     CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() == "(5+(2+1))");
-    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() != "(7+(2+1))"); 
+    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() != "(7+(2+1))");
+
+    /******************
+    _let
+    *******************/
+    // CHECK(to_string(new _let(new Var("x"), new Num (7))) == "(_let x=7)"); 
 
 };
