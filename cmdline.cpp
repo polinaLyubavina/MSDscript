@@ -12,8 +12,8 @@
     std::string print = "--print";
     std::string pretty_print = "--pretty-print";
 
-    std::string cmdline_out = "Arguments available for use are:\n --test\n --help\n --interp\n --print\n --pretty-print\n";
-
+    std::string cmdline_output = "Arguments available for use are:\n --test\n --help\n --interp\n --print\n --pretty-print\n";
+    std::ostream& cmdline_intput;       // stores input from cmdline
 
 void use_arguments(int argc, char **argv) {
 
@@ -23,7 +23,7 @@ void use_arguments(int argc, char **argv) {
     if(argc == 2) {
 
         if(argvalue1.compare(help) == 0) {
-            std::cout << cmdline_out;
+            std::cout << cmdline_output;
         }
 
         else if(argvalue1.compare(test) == 0) {
@@ -36,11 +36,14 @@ void use_arguments(int argc, char **argv) {
         }
 
         else if(argvalue1.compare(print) == 0) {
-
+            // std::cin >> cmdline_input;
+            Expr::print(cmdline_intput);
+            exit(0);
         }
 
         else if(argvalue1.compare(pretty_print) == 0) {
-            
+            Expr::pretty_print(cmdline_output);
+            exit(0);
         }
 
         else {
