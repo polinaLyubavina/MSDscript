@@ -4,7 +4,8 @@
 typedef enum {
   prec_none,      // = 0
   prec_add,       // = 1
-  prec_mult       // = 2
+  prec_mult,      // = 2
+  prec_let        // = 3
 } precedence_t;
 
 class Expr {

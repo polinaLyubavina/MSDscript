@@ -45,7 +45,7 @@ void Mult::print(std::ostream& out) {
 }
 
 void Mult::pretty_print(std::ostream& out) {
-    if(this -> lhs -> pretty_print_at() == prec_mult) {
+    if(this -> lhs -> pretty_print_at() == prec_add || this -> lhs -> pretty_print_at() == prec_let) {
         out << "(";
         this -> lhs -> pretty_print(out);
         out << ")";
@@ -53,8 +53,17 @@ void Mult::pretty_print(std::ostream& out) {
     else {
         this -> lhs -> pretty_print(out);
     }
+
     out << " * ";
-    this -> rhs -> pretty_print(out);
+
+    if(this -> rhs -> pretty_print_at() == prec_add) {
+        out << "(";
+        this -> rhs -> pretty_print(out);
+        out << ")";
+    }
+    else {
+        this -> rhs -> pretty_print(out);
+    }
 }
 
 std::string Mult::to_string() {

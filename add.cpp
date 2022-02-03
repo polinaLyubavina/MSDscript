@@ -45,14 +45,15 @@ void Add::print(std::ostream& out) {
 }
 
 void Add::pretty_print(std::ostream& out) {
-    if(this -> lhs -> pretty_print_at() == prec_add) {
+    if(this -> lhs -> pretty_print_at() == prec_let) {
         out << "(";
         this -> lhs -> pretty_print(out);
-        out << "(";
-    } 
-    else {
-        this -> rhs -> pretty_print(out);
+        out << ")";
     }
+    else {
+        this -> lhs -> pretty_print(out);
+    }
+
     out << " + ";
     this -> rhs -> pretty_print(out);
 }
