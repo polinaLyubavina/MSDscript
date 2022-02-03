@@ -22,15 +22,25 @@ int _let::interp() {
     return this -> body -> subst(lhs, rhs) -> interp(); 
 }
 
+// returns true if rhs or body has a variable
 bool _let::has_variable() {
-    return body -> has_variable();
+    return rhs -> has_variable() || body -> has_variable();
 }
 
 Expr* _let::subst(std::string var, Expr* e) {
-    body->subst(lhs, rhs);
+    return body -> subst(var, e); 
 }
 
 void _let::print(std::ostream& out) {
+    out << "(_let ";
+    out << lhs; 
+    out << "=";
+    rhs -> print(out);
+    out << " _in ";
+    out << "(";
+    body -> print(out);
+    out << ")";
+    out << ")";
 
 }
 
