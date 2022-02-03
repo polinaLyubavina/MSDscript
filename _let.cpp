@@ -8,30 +8,30 @@
  *     _let
 *******************/
 
-_let::_let(std::string name, Expr* val, Expr * rhs) {
-    this->name = name;
-    this->val = val;
+_let::_let(std::string lhs, Expr* rhs, Expr* body) {
+    this->lhs = lhs;
     this->rhs = rhs;
+    this->body = body;
 }
 
-bool _let::equals(Expr* rhs){
-    return  this->interp() == rhs->interp();
+bool _let::equals(Expr* another_expression){
+    return  this->interp() == another_expression->interp();
 }
 
 int _let::interp() {
-    return this->rhs->subst(name, val)->interp(); 
+    return this -> body -> subst(lhs, rhs) -> interp(); 
 }
 
 bool _let::has_variable() {
-    return rhs -> has_variable();
+    return body -> has_variable();
 }
 
 Expr* _let::subst(std::string var, Expr* e) {
-    rhs->subst(name, val);
+    body->subst(lhs, rhs);
 }
 
 void _let::print(std::ostream& out) {
-    // std::cout << "( _let " << name << "=" << val << " _in " << rhs->print() << ")";
+
 }
 
 void _let::pretty_print(std::ostream& out) {
