@@ -17,10 +17,10 @@ class Expr {
 
         virtual void print(std::ostream& out) = 0; 
         virtual void pretty_print(std::ostream& out) = 0; 
-        virtual precedence_t pretty_print_at(std::ostream& out) = 0;
+        virtual precedence_t pretty_print_at() = 0;
 
         virtual std::string to_string() = 0;
-};
+}
 
 class Num : public Expr {
     public:
@@ -33,9 +33,9 @@ class Num : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        precedence_t pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at();
         std::string to_string();
-}; 
+}
 
 class Add : public Expr {
     public:
@@ -49,9 +49,9 @@ class Add : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        precedence_t pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at();
         std::string to_string();
-};
+}
 
 class Mult : public Expr {
     public:
@@ -65,9 +65,9 @@ class Mult : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        precedence_t pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at();
         std::string to_string();
-};
+}
 
 class Var : public Expr {
     public:
@@ -80,9 +80,9 @@ class Var : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        precedence_t pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at();
         std::string to_string();
-};
+}
 
 class _let : public Expr {
     public:
@@ -98,6 +98,6 @@ class _let : public Expr {
         Expr* subst(std::string var, Expr* e);
         void print(std::ostream& out);
         void pretty_print(std::ostream& out);
-        precedence_t pretty_print_at(std::ostream& out);
+        precedence_t pretty_print_at();
         std::string to_string();
-};
+}

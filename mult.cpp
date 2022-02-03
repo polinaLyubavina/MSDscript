@@ -1,6 +1,7 @@
 #include "expr.h"
 #include "catch.h"
 #include <stdexcept>
+#include <iostream>
 #include <sstream>
 
 /******************
@@ -33,7 +34,7 @@ bool Mult::has_variable() {
 
 Expr* Mult::subst(std::string var, Expr* e) {
     return new Mult((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
-};
+}
 
 void Mult::print(std::ostream& out) {
     out << "(";
@@ -41,14 +42,10 @@ void Mult::print(std::ostream& out) {
     out << "*";
     rhs -> print(out);
     out << ")";
-};
+}
 
 void Mult::pretty_print(std::ostream& out) {
-    out << "(";
-    lhs -> print(out);
-    out << " * ";
-    rhs -> print(out);
-    out << ")";
+
 };
 
 std::string Mult::to_string() {
@@ -57,6 +54,35 @@ std::string Mult::to_string() {
     return out.str();
 }
 
-precedence_t Mult::pretty_print_at(std::ostream& out){
+precedence_t Mult::pretty_print_at(){
     return prec_mult; 
+}
+
+/******************
+TESTS
+*******************/
+TEST_CASE("mult") {
+
+    /******************
+    interp()
+    *******************/
+    Num* num1 = new Num(5);
+    Num* num2 = new Num(7);
+    Add* add1 = new Add(num1, num2);
+    Mult* mult = new Mult(num1, num2);
+    CHECK(mult->interp() == 35);
+
+    /******************
+    has_variable()
+    *******************/
+    CHECK((new Mult(new Num(7), new Var("7")))->has_variable() == true);
+    CHECK((new Mult(new Num(7), new Num(7)))->has_variable() == false);
+
+    /******************
+    subst()
+    *******************/
+    // CHECK( (new Add(new Var("x"), new Num(7)))
+    //    ->subst("x", new Var("y"))
+    //    ->equals(new Add(new Var("y"), new Num(7))) );
+
 }
