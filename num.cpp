@@ -52,7 +52,7 @@ std::string Num::to_string() {
 }
 
 precedence_t Num::pretty_print_at(){
-    // return this->val; 
+    return prec_none; 
 }
 
 /******************

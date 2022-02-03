@@ -43,11 +43,11 @@ Expr* Var::subst(std::string var, Expr* e) {
 }
 
 void Var::print(std::ostream& out) {
-    std::cout << this;
+    std::cout << this -> val;
 }
 
 void Var::pretty_print(std::ostream& out) {
-    std::cout << this; 
+    std::cout << this -> val; 
 }
 
 std::string Var::to_string() {
@@ -57,7 +57,7 @@ std::string Var::to_string() {
 }
 
 precedence_t Var::pretty_print_at(){
-    
+    return prec_none; 
 }
 
 /******************

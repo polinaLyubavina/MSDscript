@@ -20,7 +20,7 @@ class Expr {
         virtual precedence_t pretty_print_at() = 0;
 
         virtual std::string to_string() = 0;
-}
+};
 
 class Num : public Expr {
     public:
@@ -35,7 +35,7 @@ class Num : public Expr {
         void pretty_print(std::ostream& out);
         precedence_t pretty_print_at();
         std::string to_string();
-}
+};
 
 class Add : public Expr {
     public:
@@ -51,7 +51,7 @@ class Add : public Expr {
         void pretty_print(std::ostream& out);
         precedence_t pretty_print_at();
         std::string to_string();
-}
+};
 
 class Mult : public Expr {
     public:
@@ -67,7 +67,7 @@ class Mult : public Expr {
         void pretty_print(std::ostream& out);
         precedence_t pretty_print_at();
         std::string to_string();
-}
+};
 
 class Var : public Expr {
     public:
@@ -82,15 +82,15 @@ class Var : public Expr {
         void pretty_print(std::ostream& out);
         precedence_t pretty_print_at();
         std::string to_string();
-}
+};
 
 class _let : public Expr {
     public:
-        std::string name;
-        Expr* val; 
-        Expr* rhs;
+        std::string lhs;
+        Expr* rhs; 
+        Expr* body;
 
-        _let(std::string name, Expr* val, Expr* rhs);
+        _let(std::string lhs, Expr* rhs, Expr* body);
 
         bool equals(Expr* e);
         int interp(); 
@@ -100,4 +100,4 @@ class _let : public Expr {
         void pretty_print(std::ostream& out);
         precedence_t pretty_print_at();
         std::string to_string();
-}
+};
