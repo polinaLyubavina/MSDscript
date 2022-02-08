@@ -7,10 +7,12 @@
 class Parse : public Expr {
 
     public:
-        void parse_num(std::istream& in);
-        void parse_var(std::istream& in);
-        void parse_add(std::istream& in);
-        void parse_mult(std::istream& in);
-        void parse_let(std::istream& in);    
+        Expr* parse_expr(std::istream& in);
+        Expr* parse_num(std::istream& in);
+        Expr* parse_var(std::istream& in);
+        Expr* parse_add(std::istream& in);
+        Expr* parse_mult(std::istream& in);
+        Expr* parse_let(std::istream& in);
+        static void skip_whitespace(std::istream& in);    
 
 };
