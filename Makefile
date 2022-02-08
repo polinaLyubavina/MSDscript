@@ -1,6 +1,6 @@
-INCS = cmdline.h catch.h expr.h
+INCS = cmdline.h catch.h expr.h parse.h
 
-OBJS = main.o cmdline.o num.o add.o mult.o var.o _let.o #tests.o
+OBJS = main.o cmdline.o num.o add.o mult.o var.o _let.o parse.o #tests.o
 
 CXXFLAGS = --std=c++14 -O2
 
@@ -26,6 +26,9 @@ mult.o: mult.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
 
 var.o: var.cpp $(INCS)
+	$(CXX) $(CXXFLAGS) -c $<
+
+parse.o: parse.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
 
 # tests.o: tests.cpp $(INCS)
