@@ -28,7 +28,13 @@ bool _let::has_variable() {
 }
 
 Expr* _let::subst(std::string var, Expr* e) {
-    // return rhs -> subst(var,e) -> interp(); 
+    if(lhs.compare(var)) {
+        return this;        //if it matches don't change it
+    }
+    else {
+        _let* output = new _let(lhs, rhs -> subst(var, e), body -> subst(var, e));
+        return output;
+    }
 }
 
 void _let::print(std::ostream& out) {
