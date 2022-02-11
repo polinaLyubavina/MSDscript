@@ -8,50 +8,34 @@
  *     Parse
 *******************/
 
-Expr* parse_expr(std::istream& input) {
-    
-    skip_whitespace(input);
-    int n = input.peek();
-
-    if((n == '-') || (isdigit(n))) {
-        return parse_num(input);
-    }
-    else if(n == '(') {
-        // consume(input, '(');
-        Expr* e = parse_expr(input);
-        skip_whitespace(input);
-        n = input.get();
-
-        if(n != ')') {
-            throw std::runtime_error("Missing close parenthesis");
-            return e;
-        }
-        else {
-            // consume(input, n);
-            throw std::runtime_error("Invalid input");
-        }
-    }
-}
-
 Expr* parse_num(std::istream& input) {
 
-    skip_whitespace(input);
-    int n = input.peek();
+    int n = 0;
+    bool negative = false;
 
-    if((n == '-') || (isdigit(n))) {
-        //consume(input, '-');
-        return new(Num)(n);
+    if(input.peek() == '-') {
+        negative = true;
+        consume(input, '-');
     }
 
-    if(n == '(' || n == ')') {
-        // consume((input '(') || (input, ')')) {
-            return new(Num)(n);
+    while(1) {
+        int c = input.peek();
+
+        if(isdigit(c)) {
+            consume(input, c);
+            n = n*10 + (c - '0');
+        }
+        else {
+            break;
         }
     }
-    else {
-        throw std::runtime_error("Invalid input");
-        // exit(1);
+
+    if(negative) {
+        n = -n;
     }
+
+    return new Num(n); 
+
 }
 
 Expr* parse_var(std::istream& input) {
@@ -59,24 +43,26 @@ Expr* parse_var(std::istream& input) {
     std::string inputVar;
     skip_whitespace(input);
 
-    if(n == '-') || (isdigit(n)) {
-        throw std::runtime_error("Invalid input");
-    }
+    // if(input = '-') | (isdigit(input)) {
+    //     throw std::runtime_error("Invalid input");
+    // }
 
     while(1) {
-        char c = in.peek();
+        char c = input.peek();
         if(!isalpha(c)) {
-            inputVar += in.get();
+            break;
         }
+        else {
+            consume(input, c);
+            inputVar += input.get();
+        } 
     }
-
     return new(Var)(inputVar);
-
 }
 
 Expr* parse_add(std::istream& input) {
 
-    
+         
 
 }
 
@@ -94,7 +80,75 @@ static void skip_whitespace(std::istream& input) {
         if(!isspace(n)) {
             break;
         }
-        //consume(in, n);
+        consume(input, n);
+    }
+}
+
+//does consume eat an input? 
+void consume(std::istream& input, int expect) {
+    int c = input.get();                           
+    assert(c == expect);
+}
+
+//gets rid of the _ underscore in input
+Expr* parse_keyword(std::istream& input) {
+
+    int c = input.get();
+}
+
+Expr* parse_addend(std::istream& input) {
+
+        skip_whitespace(input);
+
+    int n = input.peek();
+
+    if((n == '-') || (isdigit(n))) {
+        return parse_num(input);
+    }
+    
+    else if(n == '(') {
+
+        consume(input, '(');
+        Expr* e = parse_expr(input);
+        skip_whitespace(input);
+        n = input.get(); 
+
+        if(n != ')') {
+            throw std::runtime_error("Missing close parenthesis");
+            return e;
+        }
+        else {
+            consume(input, n);
+            throw std::runtime_error("Invalid input");
+        }
+    }
+
+}
+
+Expr* parse_multicand(std::istream& input) {
+
+
+
+}
+
+Expr* parse_expr(std::istream& input) {
+
+    Expr* e;
+
+    e = parse_addend(input);
+
+    skip_whitespace(input);
+
+    int c = input.peek();
+
+    if(c == '+') {
+
+        consume(input, '+');
+        Expr* rhs = parse_expr(input);
+        return new Add(e, rhs);
+    }
+    else {
+        return e;
     }
 }
 
