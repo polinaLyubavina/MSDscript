@@ -43,7 +43,11 @@ Expr* parse_var(std::istream& input) {
     std::string inputVar;
     skip_whitespace(input);
 
-    // if(input = '-') | (isdigit(input)) {
+    if(input.peek() == '-') {
+        throw std::runtime_error("Invalid input");
+    } 
+    //FIX
+    // else if(isdigit(input)) {
     //     throw std::runtime_error("Invalid input");
     // }
 
@@ -70,7 +74,7 @@ Expr* parse_mult(std::istream& input) {
 
 }
 
-Expr* parse_let(std::istream& input) {
+Expr* parse_let(std::istream& input) { 
 
 } 
 
