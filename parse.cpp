@@ -88,11 +88,38 @@ void consume(std::istream& input, int expect) {
 }
 
 //parse_keyword() works for finding keywords _let and _in in the input
-Expr* parse_keyword(std::istream& input) {
+static char parse_keyword(std::istream& input) {
 
-    int c = input.get();
-    
+    skip_whitespace(input);
+    char c = input.get();
 
+    if(c == '_') {
+        c = input.get();
+        if(c == 'l') {
+            c = input.get();
+            if(c == 'e') {
+                c = input.get();
+                if(c == 't') {
+                    c == input.get();
+                    if(c == ' ') {
+                        return '_let ';
+                    }
+                }
+            }
+        }
+        else if(c == 'i') {
+            c == input.get();
+            if(c == 'n') {
+                c == input.get();
+                if(c == ' ') {
+                    return '_in ';
+                }
+            }
+        }
+        else {
+            throw std::runtime_error('Invalid keyword');
+        }
+    }
 }
 
 Expr* parse_addend(std::istream& input) {
