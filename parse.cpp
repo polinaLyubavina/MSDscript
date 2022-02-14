@@ -94,6 +94,7 @@ static char parse_keyword(std::istream& input) {
     char c = input.get();
 
     if(c == '_') {
+        //check for _let
         c = input.get();
         if(c == 'l') {
             c = input.get();
@@ -107,6 +108,7 @@ static char parse_keyword(std::istream& input) {
                 }
             }
         }
+        //check for _in
         else if(c == 'i') {
             c == input.get();
             if(c == 'n') {
@@ -117,8 +119,15 @@ static char parse_keyword(std::istream& input) {
             }
         }
         else {
-            throw std::runtime_error('Invalid keyword');
+            throw std::runtime_error("Invalid keyword");
         }
+    }
+    //check for '='
+    if(c == '=') {
+        return '=';
+    }
+    else {
+        throw std::runtime_error("Invalid structure");
     }
 }
 
