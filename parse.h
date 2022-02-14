@@ -17,7 +17,8 @@ Expr* parse_let(std::istream &input);
 Expr* parse_addend(std::istream &input);
 Expr* parse_multicand(std::istream &input);
 
-Expr* parse_keyword(std::istream &input); 
-
+static char parse_keyword(std::istream &input); 
 static void skip_whitespace(std::istream &input); 
 static void consume(std::istream &input, int expect);  
+Expr* parse_str(std::string s);
+std::string var_helper(std::istream& input);

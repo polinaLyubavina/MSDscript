@@ -19,7 +19,7 @@ bool _let::equals(Expr* another_expression){
 }
 
 int _let::interp() {
-    return body -> subst(lhs, rhs) -> interp(); 
+    // return body -> subst(lhs, rhs -> interp()) -> interp();
 }
 
 // returns true if rhs or body has a variable

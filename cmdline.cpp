@@ -15,8 +15,8 @@
     std::string pretty_print = "--pretty-print";
 
     std::string allowed_arguments = "Allowed arguments:\n --test\n --help\n --interp\n --print\n --pretty-print\n";
-    std::ostream& cmdline_output;       // cmdline output
-    std::istream& cmdline_input;        // stores input from cmdline
+    // std::ostream& cmdline_output;       // cmdline output
+    // std::istream& cmdline_input;        // stores input from cmdline
 
 void use_arguments(int argc, char **argv) {
 
