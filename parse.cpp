@@ -16,6 +16,7 @@ Expr* parse(std::istream &input) {
 
 Expr* parse_num(std::istream& input) {
 
+    skip_whitespace(input);
     int n = 0;
     bool negative = false;
 
@@ -49,8 +50,8 @@ Expr* parse_str(std::string s) {
     return parse(input);
 }
 
-Expr* parse_var(std::istream& input) {
-
+//gives back a string that Var & _let can use
+std::string var_helper(std::istream& input) {
     std::string outputVar;
     skip_whitespace(input);
 
@@ -62,13 +63,17 @@ Expr* parse_var(std::istream& input) {
         char c = input.peek();
         if(!isalpha(c)) {
             break;
-            // throw std::runtime_error("Invalid input");
         }
         else {
             consume(input, c);
             outputVar += c;
         } 
     }
+    return outputVar;
+}
+
+Expr* parse_var(std::istream& input) {
+    std::string outputVar = var_helper(input);
     return new Var(outputVar);
 }
 
@@ -80,8 +85,8 @@ Expr* parse_let(std::istream& input) {
     //check if keyword is '_let'
     if(parse_keyword(input) == '_let ') {
         skip_whitespace(input);
-        //FIX
-        lhs = parse_var(input);
+        std::string outputVar = var_helper(input);
+        lhs = outputVar;
     }
     else {
         throw std::runtime_error("Invalid _let lhs input");
@@ -121,7 +126,9 @@ void skip_whitespace(std::istream& input) {
 //consume is a hungry function that eats an input before going to the next one
 void consume(std::istream& input, int expect) {
     int c = input.get();                           
-    assert(c == expect);
+    if(c != expect) {
+        throw std::runtime_error("Consume can't eat a mismatch");
+    }
 }
 
 //parse_keyword() works for finding keywords _let and _in in the input
@@ -199,30 +206,31 @@ Expr* parse_addend(std::istream& input) {
 
 Expr* parse_multicand(std::istream& input) {
 
-    // if(isdigit(next_input)) {
-    //     parse_num();
-    // }
-    // else if(next_input == '(') {
-    //     parse_expr();
-    // }
-    // else if(isalpha(next_input)) {
-    //     parse_var();
-    // }
-    // else if(next_input == '_') {
-    //     kw = parse_keyword();
-    //     if(kw == "_let") {
-    //         parse_let();
-    //     }
-    //     else if(kw == "_false") {
+    skip_whitespace(input); 
+    int c = input.peek(); 
 
-    //     }
-    //     else if(kw == "_true") {
-
-    //     }
-    //     else if(kw == "_if") { 
-    //         prase_if();
-    //     }
-    // }
+    //if input is digit
+    if((isdigit(c)) || (c == '-')) {
+        return parse_num(input);
+    }
+    //if input is variable
+    else if(isalpha(c)) {
+        return parse_var(input);
+    }
+    //if input is an expression
+    else if(c == '(') {
+        consume(input, '(');
+        Expr* e = parse_expr(input);
+        consume(input, ')');
+        if(c != ')') {
+            std::runtime_error("Missing close paranthesis");
+        }
+        return e;
+    }
+    else {
+        consume(input, c);
+        throw std::runtime_error("Invalid input");
+    }
 }
 
 Expr* parse_expr(std::istream& input) {
