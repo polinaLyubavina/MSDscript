@@ -8,6 +8,12 @@
  *     Parse
 *******************/
 
+Expr* parse(std::istream &input) {
+    skip_whitespace(input);
+    Expr* e = parse_expr(input);
+    return e; 
+}
+
 Expr* parse_num(std::istream& input) {
 
     int n = 0;
@@ -43,18 +49,15 @@ Expr* parse_var(std::istream& input) {
     std::string inputVar;
     skip_whitespace(input);
 
-    if(input.peek() == '-') {
+    if(input.peek() == '-') {  
         throw std::runtime_error("Invalid input");
     } 
-    //FIX
-    // else if(isdigit(input)) {
-    //     throw std::runtime_error("Invalid input");
-    // }
 
     while(1) {
         char c = input.peek();
         if(!isalpha(c)) {
-            break;
+            // break;
+            throw std::runtime_error("Invalid input");
         }
         else {
             consume(input, c);
@@ -64,21 +67,11 @@ Expr* parse_var(std::istream& input) {
     return new(Var)(inputVar);
 }
 
-Expr* parse_add(std::istream& input) {
-
-         
-
-}
-
-Expr* parse_mult(std::istream& input) {
-
-}
-
 Expr* parse_let(std::istream& input) { 
 
 } 
 
-static void skip_whitespace(std::istream& input) {
+void skip_whitespace(std::istream& input) {
     while(1) {
         int n = input.peek();
         if(!isspace(n)) {
@@ -88,21 +81,23 @@ static void skip_whitespace(std::istream& input) {
     }
 }
 
-//does consume eat an input? 
+//consume is a hungry function that eats an input before going to the next one
 void consume(std::istream& input, int expect) {
     int c = input.get();                           
     assert(c == expect);
 }
 
-//gets rid of the _ underscore in input
+//parse_keyword() works for finding keywords _let and _in in the input
 Expr* parse_keyword(std::istream& input) {
 
     int c = input.get();
+    
+
 }
 
 Expr* parse_addend(std::istream& input) {
 
-        skip_whitespace(input);
+    skip_whitespace(input);
 
     int n = input.peek();
 
@@ -131,8 +126,30 @@ Expr* parse_addend(std::istream& input) {
 
 Expr* parse_multicand(std::istream& input) {
 
+    // if(isdigit(next_input)) {
+    //     parse_num();
+    // }
+    // else if(next_input == '(') {
+    //     parse_expr();
+    // }
+    // else if(isalpha(next_input)) {
+    //     parse_var();
+    // }
+    // else if(next_input == '_') {
+    //     kw = parse_keyword();
+    //     if(kw == "_let") {
+    //         parse_let();
+    //     }
+    //     else if(kw == "_false") {
 
+    //     }
+    //     else if(kw == "_true") {
 
+    //     }
+    //     else if(kw == "_if") { 
+    //         prase_if();
+    //     }
+    // }
 }
 
 Expr* parse_expr(std::istream& input) {
