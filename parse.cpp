@@ -44,9 +44,14 @@ Expr* parse_num(std::istream& input) {
 
 }
 
+Expr* parse_str(std::string s) {
+    std::stringstream input(s);
+    return parse(input);
+}
+
 Expr* parse_var(std::istream& input) {
 
-    std::string inputVar;
+    std::string outputVar;
     skip_whitespace(input);
 
     if(input.peek() == '-') {  
@@ -56,19 +61,51 @@ Expr* parse_var(std::istream& input) {
     while(1) {
         char c = input.peek();
         if(!isalpha(c)) {
-            // break;
-            throw std::runtime_error("Invalid input");
+            break;
+            // throw std::runtime_error("Invalid input");
         }
         else {
             consume(input, c);
-            inputVar += input.get();
+            outputVar += c;
         } 
     }
-    return new(Var)(inputVar);
+    return new Var(outputVar);
 }
 
 Expr* parse_let(std::istream& input) { 
+    std::string lhs;
+    Expr* rhs;
+    Expr* body;
 
+    //check if keyword is '_let'
+    if(parse_keyword(input) == '_let ') {
+        skip_whitespace(input);
+        //FIX
+        lhs = parse_var(input);
+    }
+    else {
+        throw std::runtime_error("Invalid _let lhs input");
+    }
+
+    //check if keyword is '_in'
+    if(parse_keyword(input) == '_in ') {
+        skip_whitespace(input);
+        body = parse_expr(input);
+    }
+    else {
+        throw std::runtime_error("Invalid _let body input");
+    }
+
+    //check if keyword is '='
+    skip_whitespace(input);
+    if(parse_keyword(input) == '=') {
+        rhs = parse_expr(input);
+    }
+    else {
+        throw std::runtime_error("Invalid _let rhs input");
+    }
+
+    //return new _let() with given input
 } 
 
 void skip_whitespace(std::istream& input) {
@@ -213,37 +250,37 @@ Expr* parse_expr(std::istream& input) {
 /******************
 TESTS
 *******************/
-// TEST_CASE("parse") {
-//   CHECK_THROWS_WITH( parse_str("()"), "bad input" );
+TEST_CASE("parse") {
+  CHECK_THROWS_WITH( parse_str("()"), "bad input" );
   
-//   CHECK( parse_str("(1)")->equals(new Num(1)) );
-//   CHECK( parse_str("(((1)))")->equals(new Num(1)) );
+  CHECK( parse_str("(1)")->equals(new Num(1)) );
+  CHECK( parse_str("(((1)))")->equals(new Num(1)) );
   
-//   CHECK_THROWS_WITH( parse_str("(1"), "bad input" );
+  CHECK_THROWS_WITH( parse_str("(1"), "bad input" );
   
-//   CHECK( parse_str("1")->equals(new Num(1)) );
-//   CHECK( parse_str("10")->equals(new Num(10)) );
-//   CHECK( parse_str("-3")->equals(new Num(-3)) );
-//   CHECK( parse_str("  \n 5  ")->equals(new Num(5)) );
-//   CHECK_THROWS_WITH( parse_str("-"), "invalid input" );
-//   // This was some temporary debugging code:
-//   //  std::istringstream in("-");
-//   //  parse_num(in)->print(std::cout); std::cout << "\n";
+  CHECK( parse_str("1")->equals(new Num(1)) );
+  CHECK( parse_str("10")->equals(new Num(10)) );
+  CHECK( parse_str("-3")->equals(new Num(-3)) );
+  CHECK( parse_str("  \n 5  ")->equals(new Num(5)) );
+  CHECK_THROWS_WITH( parse_str("-"), "invalid input" );
+  // This was some temporary debugging code:
+  //  std::istringstream in("-");
+  //  parse_num(in)->print(std::cout); std::cout << "\n";
   
-//   CHECK_THROWS_WITH( parse_str(" -   5  "), "invalid input" );
+  CHECK_THROWS_WITH( parse_str(" -   5  "), "invalid input" );
   
-//   CHECK( parse_str("x")->equals(new Var("x")) );
-//   CHECK( parse_str("xyz")->equals(new Var("xyz")) );
-//   CHECK( parse_str("xYz")->equals(new Var("xYz")) );
-//   CHECK_THROWS_WITH( parse_str("x_z"), "invalid input" );
+  CHECK( parse_str("x")->equals(new Var("x")) );
+  CHECK( parse_str("xyz")->equals(new Var("xyz")) );
+  CHECK( parse_str("xYz")->equals(new Var("xYz")) );
+  CHECK_THROWS_WITH( parse_str("x_z"), "invalid input" );
   
-//   CHECK( parse_str("x + y")->equals(new Add(new Var("x"), new Var("y"))) );
-//   CHECK( parse_str("x * y")->equals(new Mult(new Var("x"), new Var("y"))) );
-//   CHECK( parse_str("z * x + y")
-//         ->equals(new Add(new Mult(new Var("z"), new Var("x")),
-//                          new Var("y"))) );
+  CHECK( parse_str("x + y")->equals(new Add(new Var("x"), new Var("y"))) );
+  CHECK( parse_str("x * y")->equals(new Mult(new Var("x"), new Var("y"))) );
+  CHECK( parse_str("z * x + y")
+        ->equals(new Add(new Mult(new Var("z"), new Var("x")),
+                         new Var("y"))) );
   
-//   CHECK( parse_str("z * (x + y)")
-//         ->equals(new Mult(new Var("z"),
-//                           new Add(new Var("x"), new Var("y"))) ));
-// }
+  CHECK( parse_str("z * (x + y)")
+        ->equals(new Mult(new Var("z"),
+                          new Add(new Var("x"), new Var("y"))) ));
+}
