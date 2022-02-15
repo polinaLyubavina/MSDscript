@@ -19,7 +19,7 @@ bool _let::equals(Expr* another_expression){
 }
 
 int _let::interp() {
-    return this -> body -> subst(lhs, rhs) -> interp(); 
+    return body -> subst(lhs, new Num(rhs -> interp())) -> interp();
 }
 
 // returns true if rhs or body has a variable
@@ -28,7 +28,13 @@ bool _let::has_variable() {
 }
 
 Expr* _let::subst(std::string var, Expr* e) {
-    return this -> body -> subst(var, e); 
+    if(lhs.compare(var)) {
+        return this;        //if it matches don't change it
+    }
+    else {
+        _let* output = new _let(lhs, rhs -> subst(var, e), body -> subst(var, e));
+        return output;
+    }
 }
 
 void _let::print(std::ostream& out) {
