@@ -1,4 +1,4 @@
-INCS = cmdline.h catch.h expr.h parse.h
+INCS = cmdline.h catch.h expr.h parse.h exec.h
 
 OBJS = cmdline.o num.o add.o mult.o var.o _let.o parse.o 
 

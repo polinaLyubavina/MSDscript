@@ -1,5 +1,8 @@
-#include "exec.cpp"
+#include "exec.h"
+#include <iostream>
 #include <string.h>
+#include <string>
+#include <sstream>
 
 std::string random_expr_string();
 
