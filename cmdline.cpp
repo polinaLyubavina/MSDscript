@@ -1,4 +1,6 @@
 #include "cmdline.h"
+#include "expr.h"
+#include "parse.h"
 #include <iostream>
 #include <string.h>
 #include <string>
@@ -15,8 +17,6 @@
     std::string pretty_print = "--pretty-print";
 
     std::string allowed_arguments = "Allowed arguments:\n --test\n --help\n --interp\n --print\n --pretty-print\n";
-    // std::ostream& cmdline_output;       // cmdline output
-    // std::istream& cmdline_input;        // stores input from cmdline
 
 void use_arguments(int argc, char **argv) {
 
@@ -35,14 +35,23 @@ void use_arguments(int argc, char **argv) {
         }
 
         else if(argvalue1.compare(interp) == 0) {
-            
+            Expr* input = parse(std::cin); 
+            int interpretedInput = input -> interp();
+            std::cout << interpretedInput << std::endl; 
+            exit(0);
         }
 
         else if(argvalue1.compare(print) == 0) {
+            Expr* input = parse(std::cin);
+            input -> print(std::cout);
+            std::cout << std::endl;
             exit(0);
         }
 
         else if(argvalue1.compare(pretty_print) == 0) {
+            Expr* input = parse(std::cin);
+            input -> pretty_print(std::cout);
+            std::cout << std::endl;
             exit(0);
         }
 
