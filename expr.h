@@ -8,6 +8,8 @@ typedef enum {
   prec_let        // = 3
 } precedence_t;
 
+class Val;
+
 class Expr {
     public:
         virtual bool equals(Expr* e) = 0; 
