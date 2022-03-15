@@ -35,7 +35,7 @@ void use_arguments(int argc, char **argv) {
 
         else if(argvalue1.compare(interp) == 0) {
             Expr* input = parse(std::cin); 
-            int interpretedInput = input -> interp();
+            Val* interpretedInput = input -> interp();
             std::cout << interpretedInput << std::endl; 
             exit(0);
         }

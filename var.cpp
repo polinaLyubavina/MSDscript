@@ -1,5 +1,7 @@
 #include "expr.h"
+#include "val.h"
 #include "catch.h"
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -8,12 +10,12 @@
  *      VAR
 *******************/
 
-Var::Var(std::string val) {
+VarExpr::VarExpr(std::string val) {
     this->val = val; 
 }
 
-bool Var::equals(Expr* e){
-    Var* e_use = dynamic_cast<Var*>(e);
+bool VarExpr::equals(Expr* e){
+    VarExpr* e_use = dynamic_cast<VarExpr*>(e);
     if(e_use == nullptr) {
         return false;
     }
@@ -22,15 +24,15 @@ bool Var::equals(Expr* e){
     }
 }
 
-int Var::interp() {
+Val* VarExpr::interp() {
     throw std::runtime_error("A Variable has no value"); 
 }
 
-bool Var::has_variable() {
-    return true; 
+bool VarExpr::has_variable() {
+    return true;
 }
 
-Expr* Var::subst(std::string var, Expr* e) {
+Expr* VarExpr::subst(std::string var, Expr* e) {
     if(this->val == var) {
         /*
         if they match return e - e that you want to replace val/var with
@@ -42,21 +44,21 @@ Expr* Var::subst(std::string var, Expr* e) {
     }
 }
 
-void Var::print(std::ostream& out) {
+void VarExpr::print(std::ostream& out) {
     std::cout << this -> val;
 }
 
-void Var::pretty_print(std::ostream& out) {
+void VarExpr::pretty_print(std::ostream& out) {
     std::cout << this -> val; 
 }
 
-std::string Var::to_string() {
+std::string VarExpr::to_string() {
     std::stringstream out;
     this -> print(out);
     return out.str();
 }
 
-precedence_t Var::pretty_print_at(){
+precedence_t VarExpr::pretty_print_at(){
     return prec_none; 
 }
 
@@ -68,27 +70,27 @@ TEST_CASE("var") {
     /******************
     Var Tests
     *******************/
-    CHECK((new Var("5"))->equals(new Var("7")) == false);
-    CHECK((new Add(new Var("cookie"), new Var("batter")))->equals(new Add(new Var("cookie"), new Var("batter"))) == true);
-    CHECK((new Mult(new Var("5"), new Var("7")))->equals(new Mult(new Var("5"), new Var("7"))) == true);
+    CHECK((new VarExpr("5"))->equals(new VarExpr("7")) == false);
+    CHECK((new AddExpr(new VarExpr("cookie"), new VarExpr("batter")))->equals(new AddExpr(new VarExpr("cookie"), new VarExpr("batter"))) == true);
+    CHECK((new MultExpr(new VarExpr("5"), new VarExpr("7")))->equals(new MultExpr(new VarExpr("5"), new VarExpr("7"))) == true);
 
     /******************
     interp()
     *******************/
-    CHECK_THROWS_WITH( (new Var("x"))->interp(), "A Variable has no value" );
+    CHECK_THROWS_WITH( (new VarExpr("x"))->interp(), "A Variable has no value" );
 
     /******************
     has_variable()
     *******************/
-    CHECK((new Var("5"))->has_variable() == true);
-    CHECK((new Add(new Num(7), new Var("7")))->has_variable() == true);
-    CHECK((new Mult(new Num(7), new Var("7")))->has_variable() == true);
+//    CHECK((new VarExpr("5"))->has_variable() == true);
+//    CHECK((new AddExpr(new NumExpr(7), new VarExpr("7")))->has_variable() == true);
+//    CHECK((new MultExpr(new NumExpr(7), new VarExpr("7")))->has_variable() == true);
 
     /******************
     subst()
     *******************/
-    CHECK( (new Add(new Var("x"), new Num(7)))
-       ->subst("x", new Var("y"))
-       ->equals(new Add(new Var("y"), new Num(7))) );
+    CHECK( (new AddExpr(new VarExpr("x"), new NumExpr(7)))
+       ->subst("x", new VarExpr("y"))
+       ->equals(new AddExpr(new VarExpr("y"), new NumExpr(7))) );
 
 }

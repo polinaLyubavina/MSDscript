@@ -1,5 +1,7 @@
 #include "expr.h"
+#include "val.h"
 #include "catch.h"
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -8,13 +10,13 @@
  *      ADD
 *******************/
 
-Add::Add(Expr* lhs, Expr*rhs) {
+AddExpr::AddExpr(Expr* lhs, Expr*rhs) {
     this->lhs = lhs;
     this->rhs = rhs; 
 }
 
-bool Add::equals(Expr* e){
-    Add* e_use = dynamic_cast<Add*>(e);
+bool AddExpr::equals(Expr* e){
+    AddExpr* e_use = dynamic_cast<AddExpr*>(e);
     if(e_use == nullptr) {
         return false;
     }
@@ -24,47 +26,47 @@ bool Add::equals(Expr* e){
     }
 }
 
-int Add::interp() {
+Val* AddExpr::interp() {
     return (this->lhs)->interp() + (this->rhs)->interp();
 }
 
-bool Add::has_variable() {
-    return (this->lhs)->has_variable() || (this->rhs)->has_variable(); 
+bool AddExpr::has_variable() {
+    return (this->lhs)->has_variable() || (this->rhs)->has_variable();
 }
 
-Expr* Add::subst(std::string var, Expr* e) {
-    return new Add((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
+Expr* AddExpr::subst(std::string var, Expr* e) {
+    return new AddExpr((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
 }
 
-void Add::print(std::ostream& out) {
-    out << "(";
-    lhs -> print(out);
-    out << "+";
-    rhs -> print(out);
-    out << ")";
+void AddExpr::print(std::ostream& output) {
+    output << "(";
+    lhs -> print(output);
+    output << "+";
+    rhs -> print(output);
+    output << ")";
 }
 
-void Add::pretty_print(std::ostream& out) {
+void AddExpr::pretty_print(std::ostream& output) {
     if(this -> lhs -> pretty_print_at() == prec_let) {
-        out << "(";
-        this -> lhs -> pretty_print(out);
-        out << ")";
+        output << "(";
+        this -> lhs -> pretty_print(output);
+        output << ")";
     }
     else {
-        this -> lhs -> pretty_print(out);
+        this -> lhs -> pretty_print(output);
     }
 
-    out << " + ";
-    this -> rhs -> pretty_print(out);
+    output << " + ";
+    this -> rhs -> pretty_print(output);
 }
 
-std::string Add::to_string() {
-    std::stringstream out;
-    this -> print(out);
-    return out.str();
+std::string AddExpr::to_string() {
+    std::stringstream output;
+    this -> print(output);
+    return output.str();
 }
 
-precedence_t Add::pretty_print_at(){
+precedence_t AddExpr::pretty_print_at(){
     return prec_add;
 }
 
@@ -76,28 +78,28 @@ TEST_CASE("add") {
     /******************
     interp()
     *******************/
-    Num* num1 = new Num(5);
-    Num* num2 = new Num(7);
-    Add* add1 = new Add(num1, num2);
+    NumExpr* num1 = new NumExpr(5);
+    NumExpr* num2 = new NumExpr(7);
+    AddExpr* add1 = new AddExpr(num1, num2);
     CHECK(add1->interp() == 12);
 
     /******************
     has_variable() 
     *******************/
-    CHECK((new Add(new Num(7), new Var("7")))->has_variable() == true);
-    CHECK((new Add(new Num(7), new Num(7)))->has_variable() == false);
+//    CHECK((new AddExpr(new NumExpr(7), new VarExpr("7")))->has_variable() == true);
+//    CHECK((new AddExpr(new NumExpr(7), new NumExpr(7)))->has_variable() == false);
 
     /******************
     subst()
     *******************/
-    CHECK( (new Add(new Var("x"), new Num(7)))
-       ->subst("x", new Var("y"))
-       ->equals(new Add(new Var("y"), new Num(7))) );
+    CHECK( (new AddExpr(new VarExpr("x"), new NumExpr(7)))
+       ->subst("x", new VarExpr("y"))
+       ->equals(new AddExpr(new VarExpr("y"), new NumExpr(7))) );
 
     /******************
     print() and pretty_print()
     *******************/
-    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() == "(5+(2+1))");
-    CHECK((new Add(new Num(5), new Add(new Num(2), new Num(1))))->to_string() != "(7+(2+1))");
+    CHECK((new AddExpr(new NumExpr(5), new AddExpr(new NumExpr(2), new NumExpr(1))))->to_string() == "(5+(2+1))");
+    CHECK((new AddExpr(new NumExpr(5), new AddExpr(new NumExpr(2), new NumExpr(1))))->to_string() != "(7+(2+1))");
 
 }

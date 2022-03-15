@@ -1,5 +1,7 @@
 #include "expr.h"
+#include "val.h"
 #include "catch.h"
+
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
@@ -8,13 +10,13 @@
  *      MULT
 *******************/
 
-Mult::Mult(Expr* lhs, Expr* rhs) {
+MultExpr::MultExpr(Expr* lhs, Expr* rhs) {
     this->lhs = lhs;
     this->rhs = rhs;
 };
 
-bool Mult::equals(Expr* e){
-    Mult* e_use = dynamic_cast<Mult*>(e);
+bool MultExpr::equals(Expr* e){
+    MultExpr* e_use = dynamic_cast<MultExpr*>(e);
     if(e_use == nullptr) {
         return false;
     }
@@ -24,55 +26,55 @@ bool Mult::equals(Expr* e){
     }
 };
 
-int Mult::interp() {
+Val* MultExpr::interp() {
     return (this->lhs)->interp() * (this->rhs)->interp();
 };
 
-bool Mult::has_variable() {
-    return (this->lhs)->has_variable() || (this->rhs)->has_variable(); 
+bool MultExpr::has_variable() {
+    return (this->lhs)->has_variable() || (this->rhs)->has_variable();
 };
 
-Expr* Mult::subst(std::string var, Expr* e) {
-    return new Mult((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
+Expr* MultExpr::subst(std::string var, Expr* e) {
+    return new MultExpr((this->lhs)->subst(var, e), (this->rhs)->subst(var, e)); 
 }
 
-void Mult::print(std::ostream& out) {
-    out << "(";
-    lhs -> print(out);
-    out << "*";
-    rhs -> print(out);
-    out << ")";
+void MultExpr::print(std::ostream& output) {
+    output << "(";
+    lhs -> print(output);
+    output << "*";
+    rhs -> print(output);
+    output << ")";
 }
 
-void Mult::pretty_print(std::ostream& out) {
+void MultExpr::pretty_print(std::ostream& output) {
     if(this -> lhs -> pretty_print_at() == prec_add || this -> lhs -> pretty_print_at() == prec_let) {
-        out << "(";
-        this -> lhs -> pretty_print(out);
-        out << ")";
+        output << "(";
+        this -> lhs -> pretty_print(output);
+        output << ")";
     }
     else {
-        this -> lhs -> pretty_print(out);
+        this -> lhs -> pretty_print(output);
     }
 
-    out << " * ";
+    output << " * ";
 
     if(this -> rhs -> pretty_print_at() == prec_add) {
-        out << "(";
-        this -> rhs -> pretty_print(out);
-        out << ")";
+        output << "(";
+        this -> rhs -> pretty_print(output);
+        output << ")";
     }
     else {
-        this -> rhs -> pretty_print(out);
+        this -> rhs -> pretty_print(output);
     }
 }
 
-std::string Mult::to_string() {
-    std::stringstream out;
-    this -> print(out);
-    return out.str();
+std::string MultExpr::to_string() {
+    std::stringstream output;
+    this -> print(output);
+    return output.str();
 }
 
-precedence_t Mult::pretty_print_at(){
+precedence_t MultExpr::pretty_print_at(){
     return prec_mult; 
 }
 
@@ -84,17 +86,17 @@ TEST_CASE("mult") {
     /******************
     interp()
     *******************/
-    Num* num1 = new Num(5);
-    Num* num2 = new Num(7);
-    Add* add1 = new Add(num1, num2);
-    Mult* mult = new Mult(num1, num2);
+    NumExpr* num1 = new NumExpr(5);
+    NumExpr* num2 = new NumExpr(7);
+    AddExpr* add1 = new AddExpr(num1, num2);
+    MultExpr* mult = new MultExpr(num1, num2);
     CHECK(mult->interp() == 35);
 
     /******************
     has_variable()
     *******************/
-    CHECK((new Mult(new Num(7), new Var("7")))->has_variable() == true);
-    CHECK((new Mult(new Num(7), new Num(7)))->has_variable() == false);
+//    CHECK((new MultExpr(new NumExpr(7), new VarExpr("7")))->has_variable() == true);
+//    CHECK((new MultExpr(new NumExpr(7), new NumExpr(7)))->has_variable() == false);
 
     /******************
     subst()

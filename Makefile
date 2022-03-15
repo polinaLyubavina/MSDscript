@@ -1,6 +1,6 @@
 INCS = cmdline.h catch.h expr.h parse.h
 
-OBJS = cmdline.o num.o add.o mult.o var.o _let.o parse.o 
+OBJS = cmdline.o expr.o parse.o
 
 CXXFLAGS = --std=c++14 -O2
 
@@ -16,26 +16,14 @@ main.o: main.cpp $(INCS)
 cmdline.o: cmdline.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
 
-_let.o: _let.cpp $(INCS)
-	$(CXX) $(CXXFLAGS) -c $<
-
-num.o: num.cpp $(INCS)
-	$(CXX) $(CXXFLAGS) -c $<
-
-add.o: add.cpp $(INCS)
-	$(CXX) $(CXXFLAGS) -c $<
-
-mult.o: mult.cpp $(INCS)
-	$(CXX) $(CXXFLAGS) -c $<
-
-var.o: var.cpp $(INCS)
+expr.o: expr.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
 
 parse.o: parse.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
 
-test_msdscript.o: test_msdscript.cpp $(INCS)
-	$(CXX) $(CXXFLAGS) -c $<
+#test_msdscript.o: test_msdscript.cpp $(INCS)
+#	$(CXX) $(CXXFLAGS) -c $<
 
 exec.o: exec.cpp $(INCS)
 	$(CXX) $(CXXFLAGS) -c $<
