@@ -131,11 +131,14 @@ PTR(Val) FunVal::mult_to(PTR(Val) input) {
     throw std::runtime_error("Cannot add FunVals");
 }
 
-//Val* FunVal::call(Val* actual_argument) {
-//    return this -> body -> subst(this -> formal_arg, actual_argument) -> interp();
+//Val* FunVal::interp() {
+//    
 //}
+
+PTR(Val) FunVal::call(PTR(Val) actual_argument) {
+    return this -> body -> subst(this -> formal_arg, actual_argument -> to_expr()) -> interp();
+}
 
 //std::string FunVal::to_string() {
 //}
-//Val* FunVal::interp() {
-//}
+

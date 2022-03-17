@@ -1,6 +1,6 @@
 INCS = cmdline.h catch.h expr.h parse.h
 
-OBJS = cmdline.o expr.o parse.o
+OBJS = cmdline.o expr.o parse.o exec.o
 
 CXXFLAGS = --std=c++14 -O2
 

@@ -13,9 +13,9 @@
     std::string test = "--test"; 
     std::string interp = "--interp";
     std::string print = "--print";
-    std::string pretty_print = "--pretty-print";
+//    std::string pretty_print = "--pretty-print";
 
-    std::string allowed_arguments = "Allowed arguments:\n --test\n --help\n --interp\n --print\n --pretty-print\n";
+    std::string allowed_arguments = "Allowed arguments:\n --test\n --help\n --interp\n --print\n";
 
 void use_arguments(int argc, char **argv) {
 
@@ -34,25 +34,25 @@ void use_arguments(int argc, char **argv) {
         }
 
         else if(argvalue1.compare(interp) == 0) {
-            Expr* input = parse(std::cin); 
-            Val* interpretedInput = input -> interp();
+            PTR(Expr) input = parse(std::cin);
+            PTR(Val) interpretedInput = input -> interp();
             std::cout << interpretedInput << std::endl; 
             exit(0);
         }
 
         else if(argvalue1.compare(print) == 0) {
-            Expr* input = parse(std::cin);
+            PTR(Expr) input = parse(std::cin);
             input -> print(std::cout);
             std::cout << std::endl;
             exit(0);
         }
 
-        else if(argvalue1.compare(pretty_print) == 0) {
-            Expr* input = parse(std::cin);
-            input -> pretty_print(std::cout);
-            std::cout << std::endl;
-            exit(0);
-        }
+//        else if(argvalue1.compare(pretty_print) == 0) {
+//            Expr* input = parse(std::cin);
+//            input -> pretty_print(std::cout);
+//            std::cout << std::endl;
+//            exit(0);
+//        }
 
         else {
             std::cerr << "Error \n";

@@ -22,7 +22,7 @@ class Expr {
     public:
         virtual bool equals(PTR(Expr) compared_against) = 0;
         virtual PTR(Val) interp() = 0;
-//        virtual std::string to_string() = 0;
+        virtual std::string to_string() = 0;
         virtual PTR(Expr) subst(std::string var, PTR(Expr) substitute) = 0;
         virtual void print(std::ostream& output) = 0;
 //        virtual void pretty_print(std::ostream& output) = 0;
@@ -129,6 +129,7 @@ class BoolExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp();
+        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
         precedence_t pretty_print_at();
@@ -146,6 +147,7 @@ class EqulExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp();
+        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
         precedence_t pretty_print_at();
@@ -164,6 +166,7 @@ class IfExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp();
+        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
         precedence_t pretty_print_at();
@@ -181,6 +184,7 @@ class FunExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp();
+        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
         precedence_t pretty_print_at();
@@ -193,11 +197,12 @@ class CallExpr : public Expr {
         PTR(Expr) actual_arg;
     
         //constructor
-        CallExpr(PTR(Expr) to_be_called, PTR(Expr) actualarg);
+        CallExpr(PTR(Expr) to_be_called, PTR(Expr) actual_arg);
     
 //        bool has_variable();
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp();
+        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
         precedence_t pretty_print_at();

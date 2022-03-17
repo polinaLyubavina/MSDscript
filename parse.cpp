@@ -217,7 +217,7 @@ PTR(Expr) parse_multicand(std::istream& input) {
 //            parse_let(input);
 //        }
 //        else if(kw == '_false') {
-//            //TODO _false, _true, _if (parse_if), _else
+//            //TODO: _false, _true, _if (parse_if), _else, _fun
 //        }
 //    }
     
