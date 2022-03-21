@@ -9,7 +9,7 @@
 
 class Expr;
 
-class Val {
+CLASS(Val) {
     public:
         virtual bool equals(Val* input) = 0; 
         virtual PTR(Val) add_to(Val* input) = 0;

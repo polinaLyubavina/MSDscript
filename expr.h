@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "pointer.h"
+#include "env.h"
 
 #endif
 
@@ -18,10 +19,11 @@ typedef enum {
 class Val;
 
 //Expr is a base class. It is an abstract (virtual) class & shoudn't be instantiated by itself.
-class Expr {
+CLASS(Expr) {
+    
     public:
         virtual bool equals(PTR(Expr) compared_against) = 0;
-        virtual PTR(Val) interp() = 0;
+        virtual PTR(Val) interp(PTR(Env) env) = 0;
         virtual std::string to_string() = 0;
         virtual PTR(Expr) subst(std::string var, PTR(Expr) substitute) = 0;
         virtual void print(std::ostream& output) = 0;
@@ -38,7 +40,7 @@ class NumExpr : public Expr {
         NumExpr(int val);
     
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -56,7 +58,7 @@ class AddExpr : public Expr {
         AddExpr(PTR(Expr) lhs, PTR(Expr) rhs);
     
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -74,7 +76,7 @@ class MultExpr : public Expr {
         MultExpr(PTR(Expr) lhs, PTR(Expr) rhs);
     
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -91,7 +93,7 @@ class VarExpr : public Expr {
         VarExpr(std::string val);
     
         bool equals(Expr* compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -112,7 +114,7 @@ class LetExpr : public Expr {
         
 //        bool has_variable();
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -128,7 +130,7 @@ class BoolExpr : public Expr {
         BoolExpr(bool input);
         
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -146,7 +148,7 @@ class EqulExpr : public Expr {
         EqulExpr(PTR(Expr) lhs, PTR(Expr) rhs);
         
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -165,7 +167,7 @@ class IfExpr : public Expr {
         IfExpr(PTR(Expr) input, PTR(Expr) then_input, PTR(Expr) else_input);
         
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -183,7 +185,7 @@ class FunExpr : public Expr {
         FunExpr(std::string formal_arg, PTR(Expr) body);
     
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
@@ -201,7 +203,7 @@ class CallExpr : public Expr {
     
 //        bool has_variable();
         bool equals(PTR(Expr) compared_against);
-        PTR(Val) interp();
+        PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
