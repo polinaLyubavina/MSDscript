@@ -159,7 +159,7 @@ class EqulExpr : public Expr {
 
 class IfExpr : public Expr {
     public:
-        PTR(Expr) input;
+        PTR(Expr) test_input;
         PTR(Expr) then_input;
         PTR(Expr) else_input;
 

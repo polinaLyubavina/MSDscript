@@ -454,7 +454,7 @@ std::string EqulExpr::to_string() {
 
 //constructor
 IfExpr::IfExpr(PTR(Expr) input, PTR(Expr) then_input, PTR(Expr) else_input) {
-    this -> input = input;
+    this -> test_input = input;
     this -> then_input = then_input;
     this -> else_input = else_input;
 }
@@ -465,14 +465,14 @@ bool IfExpr::equals(PTR(Expr) compared_against) {
         return false;
     }
     else {
-        return (this -> input) -> equals(casted_val -> input)
+        return (this -> test_input) -> equals(casted_val -> test_input)
                 && (this -> then_input) -> equals(casted_val -> then_input)
                 && (this -> else_input) -> equals(casted_val -> else_input);
     }
 }
 
 PTR(Val) IfExpr::interp(PTR(Env) env) {
-    if(input -> interp(env) ) {
+    if(test_input -> interp(env) ) {
         return then_input -> interp(env);
     }
     else {
@@ -481,7 +481,7 @@ PTR(Val) IfExpr::interp(PTR(Env) env) {
 }
 
 void IfExpr::print(std::ostream& output) {
-    PTR(Expr) temp_input = this -> input;
+    PTR(Expr) temp_input = this -> test_input;
     PTR(Expr) temp_thenInput = this -> then_input;
     PTR(Expr) temp_elseInput = this -> else_input;
     
@@ -495,13 +495,13 @@ void IfExpr::print(std::ostream& output) {
 }
 
 PTR(Expr) IfExpr::subst(std::string var, PTR(Expr) e) {
-    return NEW(IfExpr)( (this -> input) -> subst(var, e),
+    return NEW(IfExpr)( (this -> test_input) -> subst(var, e),
                        (this -> then_input) -> subst(var, e),
                        (this -> else_input) -> subst(var, e) );
 };
 
 std::string IfExpr::to_string() {
-    return "(_if " + (input -> to_string() ) + " _then " + (then_input -> to_string() ) + " _else " + (else_input -> to_string() ) + ")";
+    return "(_if " + (test_input -> to_string() ) + " _then " + (then_input -> to_string() ) + " _else " + (else_input -> to_string() ) + ")";
 }
 
 //void IfExpr::pretty_print(std::ostream& output) {

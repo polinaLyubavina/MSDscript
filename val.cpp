@@ -93,9 +93,11 @@ PTR(Val) BoolVal::mult_to(PTR(Val) input) {
     throw std::runtime_error("Cannot add booleans");
 }
 
+std::string BoolVal::to_string() {
+    return std::to_string(this -> input);
+}
+
 //Val* BoolVal::interp() {
-//}
-//std::string BoolVal::to_string() {
 //}
 
 
@@ -131,14 +133,15 @@ PTR(Val) FunVal::mult_to(PTR(Val) input) {
     throw std::runtime_error("Cannot add FunVals");
 }
 
-//Val* FunVal::interp() {
-//    
-//}
-
 PTR(Val) FunVal::call(PTR(Val) actual_argument) {
-    return this -> body -> subst(this -> formal_arg, actual_argument -> to_expr()) -> interp();
+    return body -> interp(NEW(ExtendedEnv)(formal_arg, actual_argument, env));
 }
 
-//std::string FunVal::to_string() {
+std::string FunVal::to_string() {
+    return "_fun (" + this -> formal_arg + ") " + this -> body -> to_string();
+}
+
+//Val* FunVal::interp() {
+//
 //}
 

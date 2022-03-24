@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "pointer.h"
+#include "env.h"
 
 #endif
 
@@ -17,7 +18,7 @@ CLASS(Val) {
         virtual PTR(Val) call(Val* actual_argument) = 0;
         virtual PTR(Val) mult_to(Val* input) = 0;
 //        virtual Val* interp() = 0;
-//        virtual std::string to_string() = 0;
+        virtual std::string to_string() = 0;
 
 };
 
@@ -49,7 +50,7 @@ class BoolVal : public Val {
         PTR(Expr) to_expr();
         PTR(Val) call(PTR(Val) actual_argument);
         PTR(Val) mult_to(PTR(Val) input);
-//        std::string to_string();
+        std::string to_string();
 //        Val* interp();
 };
 
@@ -57,6 +58,7 @@ class FunVal : public Val {
     public:
         std::string formal_arg;
         PTR(Expr) body;
+        PTR(Env) env;
     
         //constructor
         FunVal(std::string formal_arg, PTR(Expr) body);
@@ -66,6 +68,6 @@ class FunVal : public Val {
         PTR(Expr) to_expr();
         PTR(Val) call(PTR(Val) actual_argument);
         PTR(Val) mult_to(PTR(Val) input);
-//        std::string to_string();
+        std::string to_string();
 //        Val* interp();
 };
