@@ -231,10 +231,12 @@ PTR(Expr) parse_num(std::istream& input) {
     return NEW(NumExpr)(n);
 }
 
+
 PTR(Expr) parse_var(std::istream& input) {
     std::string outputVar = var_helper(input);
     return NEW(VarExpr)(outputVar);
 }
+
 
 PTR(Expr) parse_let(std::istream& input) {
     std::string lhs;
@@ -270,7 +272,7 @@ PTR(Expr) parse_let(std::istream& input) {
 
 PTR(Expr) parse_addend(std::istream& input) {
     skip_whitespace(input);
-    PTR(Expr) e = parse_expr(input);
+    PTR(Expr) e = parse_multicand(input);    //sends parse_expr into loop
     int n = input.peek();
     
     if((n == '-') || (isdigit(n))) {
@@ -296,7 +298,7 @@ PTR(Expr) parse_addend(std::istream& input) {
 PTR(Expr) parse_multicand(std::istream& input) {
     skip_whitespace(input); 
     int c = input.peek();
-    PTR(Expr) e = parse_expr(input);
+    PTR(Expr) e = parse_helper(input);
 
     //if input is digit
     if((isdigit(c)) || (c == '-')) {
