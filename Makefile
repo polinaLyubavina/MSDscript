@@ -1,11 +1,11 @@
 INCS = cmdline.h expr.h parse.h env.h val.h exec.h pointer.h catch.h
 
-OBJS = cmdline.o expr.o parse.o env.o val.o exec.o test_msdscript.o main.o
+OBJS = cmdline.o expr.o parse.o env.o val.o exec.o
 
 CXXFLAGS = --std=c++14 -O2
 
 msdscript: $(OBJS) main.o
-	$(CXX) $(CXXFLAGS) -o msdscript $(OBJS)
+	$(CXX) $(CXXFLAGS) -o msdscript $(OBJS) main.o
 	
 test_msdscript: $(OBJS) test_msdscript.o
 	$(CXX) $(CXXFLAGS) -o test_msdscript $(OBJS) test_msdscript.o
