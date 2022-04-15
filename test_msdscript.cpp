@@ -32,4 +32,4 @@ std::string random_expr_string() {
         return random_expr_string() + "+" + random_expr_string();
 }
 
-//TODO: do go on for multiply, add, etc.
+//TODO: add multiply, add, etc.
