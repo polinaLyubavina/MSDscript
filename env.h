@@ -1,10 +1,3 @@
-//
-//  env.h
-//  msdscript_xcode
-//
-//  Created by Polina Lyubavina on 3/21/22.
-//
-
 #ifndef env_h
 #define env_h
 
