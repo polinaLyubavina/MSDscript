@@ -173,19 +173,18 @@ PTR(Expr) parse_comparg(std::istream& input) {
     int c = input.peek();
 
     if(c == '+') {
+        
         consume(input, '+');
-        PTR(Expr) rhs = parse_expr(input);
+        PTR(Expr) rhs = parse_comparg(input);
         
         return NEW(AddExpr)(e, rhs);
-    } else if (c == '*') {
-        consume(input, '*');
-        PTR(Expr) rhs = parse_helper(input);
         
-        return NEW(MultExpr)(e, rhs);
     }
     
     else {
+        
         return e;
+        
     }
 }
 
@@ -389,15 +388,27 @@ PTR(Expr) parse_let(std::istream& input) {
     return NEW(LetExpr)(lhs, rhs, body);
 }
 
+
 PTR(Expr) parse_addend(std::istream& input) {
     
     skip_whitespace(input);
     PTR(Expr) e = parse_multicand(input);    //sends parse_expr into loop
+    skip_whitespace(input);
     
-    // Should call parse addend somehow.
+    int c = input.peek();
+
+    if(c == '*') {
+        
+        consume(input, '*');
+        PTR(Expr) rhs = parse_addend(input);
+        
+        return NEW(MultExpr)(e, rhs);
+        
+    }
     
     return e;
 }
+
 
 PTR(Expr) parse_multicand(std::istream& input) {
 
@@ -406,6 +417,7 @@ PTR(Expr) parse_multicand(std::istream& input) {
     
     return e;
 }
+
 
 PTR(Expr) parse_if(std::istream& input) {
    
@@ -467,10 +479,10 @@ TEST_CASE("parse") {
   
   CHECK( parse_str("x + y") -> equals(NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
   CHECK( parse_str("x * y") -> equals(NEW(MultExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
-    CHECK( parse_str("z * x + y") -> to_string() == "");
-//        -> equals(NEW(AddExpr)(NEW(MultExpr)(NEW(VarExpr)("z"), NEW(VarExpr)("x") ),
-//                              NEW(VarExpr)("y") ) ) );
-//
+    CHECK( parse_str("z * x + y")
+        -> equals(NEW(AddExpr)(NEW(MultExpr)(NEW(VarExpr)("z"), NEW(VarExpr)("x") ),
+                              NEW(VarExpr)("y") ) ) );
+
   CHECK( parse_str("z * (x + y)")
         -> equals(NEW(MultExpr)(NEW(VarExpr)("z"),
                                NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) ) );
