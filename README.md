@@ -34,7 +34,7 @@ The MSDscript follows a basic mathematical precedence, including:
 ## Getting Started
 -----
 
-MSDscript runs from the command line, so navigate to the directory and run the following commands.
+MSDscript runs from the command line, so navigate to its directory and run the following commands:
 
 * `make`
 Creates the MSDscript executable
@@ -56,6 +56,8 @@ This will run the program and execute any commands you pass to it
     
 ## User Guide
 -----
+
+The MSDscript contains Expressions and Values. They are different. Expressions are un-interpreted equations, and Values are the interpreted results.  
 
 - Numerical Expressions
   - Numbers can be positive or negative. 
