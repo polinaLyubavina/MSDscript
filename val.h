@@ -12,11 +12,12 @@ class Expr;
 
 CLASS(Val) {
     public:
-        virtual bool equals(Val* input) = 0; 
-        virtual PTR(Val) add_to(Val* input) = 0;
+        virtual ~Val() { }
+        virtual bool equals(PTR(Val) input) = 0;
+        virtual PTR(Val) add_to(PTR(Val) input) = 0;
         virtual PTR(Expr) to_expr() = 0;
-        virtual PTR(Val) call(Val* actual_argument) = 0;
-        virtual PTR(Val) mult_to(Val* input) = 0;
+        virtual PTR(Val) call(PTR(Val) actual_argument) = 0;
+        virtual PTR(Val) mult_to(PTR(Val) input) = 0;
         virtual std::string to_string() = 0;
 
 };

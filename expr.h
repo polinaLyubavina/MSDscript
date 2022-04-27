@@ -22,6 +22,7 @@ class Val;
 CLASS(Expr) {
     
     public:
+        virtual ~Expr() { }
         virtual bool equals(PTR(Expr) compared_against) = 0;
         virtual PTR(Val) interp(PTR(Env) env) = 0;
         virtual std::string to_string() = 0;
@@ -92,7 +93,7 @@ class VarExpr : public Expr {
         //constructor
         VarExpr(std::string val);
     
-        bool equals(Expr* compared_against);
+        bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
         PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);

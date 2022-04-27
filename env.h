@@ -10,6 +10,7 @@ class Val;
 
 CLASS(Env) {
     public:
+        virtual ~Env() { }
         static PTR(Env) empty;
         virtual PTR(Val) lookup(std::string find_name) = 0;
 };

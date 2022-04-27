@@ -31,7 +31,7 @@ bool VarExpr::equals(PTR(Expr) e){
 
 PTR(Val) VarExpr::interp(PTR(Env) env) {
     
-    throw std::runtime_error("A Variable has no value");
+    return env->lookup(this -> val);
     
 }
 
@@ -45,7 +45,7 @@ PTR(Expr) VarExpr::subst(std::string var, PTR(Expr) e) {
     }
     
     else {
-        return this;
+        return THIS;
     }
 }
 
@@ -114,7 +114,7 @@ PTR(Expr) NumExpr::subst(std::string var, PTR(Expr) e) {
     /*
     there is no variable to substitute so you return the number
     */
-    return this;
+    return THIS;
 };
 
 void NumExpr::print(std::ostream& out) {
@@ -333,7 +333,7 @@ LetExpr::LetExpr(std::string lhs, PTR(Expr) rhs, PTR(Expr) body) {
     
 }
 
-bool LetExpr::equals(Expr* another_expression){
+bool LetExpr::equals(PTR(Expr) another_expression){
 //    return  this->interp(env) == another_expression->interp(env);
     
     PTR(LetExpr) casted_another_expression = CAST(LetExpr)(another_expression);
@@ -363,7 +363,7 @@ PTR(Val) LetExpr::interp(PTR(Env) env) {
 PTR(Expr) LetExpr::subst(std::string var, PTR(Expr) e) {
     
     if(lhs.compare(var) == 0) {
-        return this;        //if it matches don't change it
+        return THIS;        //if it matches don't change it
     }
     
     else {
@@ -466,7 +466,7 @@ void BoolExpr::print(std::ostream& output) {
 
 PTR(Expr) BoolExpr::subst(std::string var, PTR(Expr) e) {
     
-    return this;
+    return THIS;
     
 };
 
@@ -650,7 +650,7 @@ std::string IfExpr::to_string() {
  *      FunExpr
 *******************/
 
-FunExpr::FunExpr(std::string formal_arg, Expr* body) {
+FunExpr::FunExpr(std::string formal_arg, PTR(Expr) body) {
     
     this -> formal_arg = formal_arg;
     this -> body = body;
@@ -663,9 +663,9 @@ PTR(Val) FunExpr::interp(PTR(Env) env) {
     
 }
 
-bool FunExpr::equals(Expr* compared_against) {
+bool FunExpr::equals(PTR(Expr)compared_against) {
     
-    FunExpr* casted_val = dynamic_cast<FunExpr*>(compared_against);
+    PTR(FunExpr) casted_val = CAST(FunExpr)(compared_against);
     
     if(casted_val == NULL) {
         return false;
@@ -679,7 +679,7 @@ bool FunExpr::equals(Expr* compared_against) {
 
 void FunExpr::print(std::ostream& output) {
     
-    output << "(_fun (" << formal_arg << ") ";
+    output << "(_fun(" << formal_arg << ")";
     this -> body -> print(output);
     output << ")";
     
@@ -688,7 +688,7 @@ void FunExpr::print(std::ostream& output) {
 PTR(Expr) FunExpr::subst(std::string var, PTR(Expr) e) {
     
     if(this -> formal_arg == var) {
-        return this;
+        return THIS;
     }
     
     else {
@@ -698,7 +698,7 @@ PTR(Expr) FunExpr::subst(std::string var, PTR(Expr) e) {
 
 std::string FunExpr::to_string() {
     
-    return "(_fun (" + formal_arg + ") " + (body -> to_string() ) + ")";
+    return "(_fun(" + formal_arg + ")" + (body -> to_string() ) + ")";
     
 }
 
@@ -720,6 +720,7 @@ CallExpr::CallExpr(PTR(Expr) to_be_called, PTR(Expr) actual_arg) {
     this -> actual_arg = actual_arg;
     
 }
+
 
 PTR(Val) CallExpr::interp(PTR(Env) env) {
     
@@ -758,7 +759,7 @@ PTR(Expr) CallExpr::subst(std::string var, PTR(Expr) e) {
 
 std::string CallExpr::to_string() {
     
-    return "(" + (to_be_called->to_string() ) + " (" + (actual_arg->to_string() ) + "))";
+    return (to_be_called->to_string() ) + "(" + (actual_arg->to_string() ) + ")";
     
 }
 
@@ -807,7 +808,7 @@ TEST_CASE("Equals") {
         CHECK( (NEW(VarExpr)("5") ) -> equals(NEW(VarExpr)("7") ) == false);
         CHECK( (NEW(AddExpr)(NEW(VarExpr)("cookie"), NEW(VarExpr)("batter") ) ) -> equals(NEW(AddExpr)(NEW(VarExpr)("cookie"), NEW(VarExpr)("batter") ) ) == true);
         CHECK( (NEW(MultExpr)(NEW(VarExpr)("5"), NEW(VarExpr)("7") ) ) -> equals(NEW(MultExpr)(NEW(VarExpr)("5"), NEW(VarExpr)("7") ) ) == true);
-        CHECK_THROWS_WITH( (NEW(VarExpr)("x") ) -> interp(NEW(EmptyEnv)), "A Variable has no value" );
+        CHECK_THROWS_WITH( (NEW(VarExpr)("x") ) -> interp(Env::empty), "free variable: x" );
         CHECK( (NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(7) ) )
            -> subst("x", NEW(VarExpr)("y") )
            -> equals(NEW(AddExpr)(NEW(VarExpr)("y"), NEW(NumExpr)(7) ) ) );
@@ -877,15 +878,15 @@ TEST_CASE("Equals") {
 
 TEST_CASE("Interp") {
     SECTION("NumExpr") {
-        CHECK( (NEW(NumExpr)(5)) -> interp(NEW(EmptyEnv)) -> equals( NEW(NumVal)(5) ) );
-        CHECK( (NEW(NumExpr)(-5)) -> interp(NEW(EmptyEnv)) -> equals( NEW(NumVal)(-5) ) );
-        CHECK( (NEW(NumExpr)(0)) -> interp(NEW(EmptyEnv)) -> equals( NEW(NumVal)(0) ) );
+        CHECK( (NEW(NumExpr)(5)) -> interp(Env::empty) -> equals( NEW(NumVal)(5) ) );
+        CHECK( (NEW(NumExpr)(-5)) -> interp(Env::empty) -> equals( NEW(NumVal)(-5) ) );
+        CHECK( (NEW(NumExpr)(0)) -> interp(Env::empty) -> equals( NEW(NumVal)(0) ) );
     }
     
     SECTION("AddExpr") {
-        CHECK( (NEW(AddExpr)(NEW(NumExpr)(5), NEW(NumExpr)(5) ) ) -> interp(NEW(EmptyEnv)) -> equals((NEW(NumVal)(10) ) ) );
-        CHECK( (NEW(AddExpr)(NEW(NumExpr)(-5), NEW(NumExpr)(-5) ) ) -> interp(NEW(EmptyEnv)) -> equals((NEW(NumVal)(-10) ) ) );
-        CHECK( (NEW(AddExpr)(NEW(NumExpr)(-5), NEW(NumExpr)(5) ) ) -> interp(NEW(EmptyEnv)) -> equals((NEW(NumVal)(0) ) ) );
+        CHECK( (NEW(AddExpr)(NEW(NumExpr)(5), NEW(NumExpr)(5) ) ) -> interp(Env::empty) -> equals((NEW(NumVal)(10) ) ) );
+        CHECK( (NEW(AddExpr)(NEW(NumExpr)(-5), NEW(NumExpr)(-5) ) ) -> interp(Env::empty) -> equals((NEW(NumVal)(-10) ) ) );
+        CHECK( (NEW(AddExpr)(NEW(NumExpr)(-5), NEW(NumExpr)(5) ) ) -> interp(Env::empty) -> equals((NEW(NumVal)(0) ) ) );
     }
     
     SECTION("MultExpr") {
@@ -1008,38 +1009,36 @@ TEST_CASE("Interp") {
               -> interp(Env::empty)
               -> equals( NEW(NumVal)(25) ) );
     }
+  
     
     SECTION("FunExpr") {
         CHECK( ( NEW(FunExpr)(
                               "y",
                               NEW(NumExpr)(25)
                               ) )
-              -> equals( NEW(FunExpr)(
-                                     "y",
-                                     NEW(NumExpr)(25)
-                                      ) ) );
+              -> interp(Env::empty)
+              -> equals( NEW(FunVal)("y", NEW(NumExpr)(25)) ) );
+        
         CHECK( ( NEW(FunExpr)(
                               "w",
                               NEW(AddExpr)(
                                            NEW(NumExpr)(15),
                                            NEW(NumExpr)(15)
                                            ) ) )
-              -> equals( NEW(FunExpr)(
-                                     "w",
-                                      NEW(AddExpr)(
-                                                   NEW(NumExpr)(15),
-                                                   NEW(NumExpr)(15)
-                                                   ) ) ) );
+              -> interp(Env::empty)
+              -> equals( NEW(FunVal)("w", NEW(AddExpr)(
+                                                       NEW(NumExpr)(15),
+                                                       NEW(NumExpr)(15)
+                                                       )) ));
     }
     
     SECTION("CallExpr") {
-        CHECK( (NEW(CallExpr)(
+        CHECK_THROWS( (NEW(CallExpr)(
                               NEW(NumExpr)(25),
                               NEW(NumExpr)(25) ) )
-              -> equals(NEW(CallExpr)(
-                                      NEW(NumExpr)(25),
-                                      NEW(NumExpr)(25)
-                                      ) ) );
+              -> interp(Env::empty),
+             "Invalid Input");
+        
         CHECK( (NEW(CallExpr)(
                               NEW(FunExpr)(
                                            "x",
@@ -1048,15 +1047,21 @@ TEST_CASE("Interp") {
                               NEW(NumExpr)(2)
                               )
                                     )
-              -> equals(NEW(CallExpr)(
-                                      NEW(FunExpr)(
-                                                   "x",
-                                                   NEW(NumExpr)(25)
-                                                   ),
-                                      NEW(NumExpr)(2)
-                                      )
-                        )
-              );
+              -> interp(Env::empty)
+              -> equals( NEW(NumVal)(25) ) );
+        
+        CHECK(
+              (NEW(CallExpr)(
+                             NEW(FunExpr)(
+                                          "x",
+                                           NEW(VarExpr)("x")
+                                            ),
+                             NEW(NumExpr)(10)
+                              )
+               )
+              -> interp(Env::empty)
+              -> equals( NEW(NumVal)(10) )
+        );
     }
 }
 
@@ -1130,7 +1135,7 @@ TEST_CASE("Print") {
                             NEW(NumExpr)(5)
                             )
                )
-              -> to_string() == "(_fun (x) 5)"
+              -> to_string() == "(_fun(x)5)"
         );
         CHECK(
               (NEW(FunExpr)(
@@ -1138,7 +1143,7 @@ TEST_CASE("Print") {
                             NEW(NumExpr)(-5)
                             )
                )
-              -> to_string() == "(_fun (z) -5)"
+              -> to_string() == "(_fun(z)-5)"
         );
     }
 
@@ -1155,7 +1160,18 @@ TEST_CASE("Print") {
                              NEW(NumExpr)(2)
                              )
                )
-              -> to_string() == "((_fun (x) (5+x)) (2))"
+              -> to_string() == "(_fun(x)(5+x))(2)"
+        );
+        CHECK(
+              (NEW(CallExpr)(
+                             NEW(FunExpr)(
+                                          "x",
+                                           NEW(VarExpr)("x")
+                                            ),
+                             NEW(NumExpr)(10)
+                              )
+               )
+            -> to_string() == "(_fun(x)x)(10)"
         );
     }
 }

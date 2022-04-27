@@ -16,9 +16,9 @@ NumVal::NumVal(int input) {
 }
 
 //compares the values at the pointer
-bool NumVal::equals(Val* input) {
+bool NumVal::equals(PTR(Val) input) {
     
-    NumVal* verifiedInput = dynamic_cast<NumVal*>(input);
+    PTR(NumVal) verifiedInput = CAST(NumVal)(input);
     
     if(verifiedInput == nullptr) {
         return false;
@@ -150,7 +150,7 @@ std::string BoolVal::to_string() {
  *      FunVal
 *******************/
 
-FunVal::FunVal(std::string formal_arg, Expr* body) {
+FunVal::FunVal(std::string formal_arg, PTR(Expr) body) {
     
     this -> formal_arg = formal_arg;
     this -> body = body;
