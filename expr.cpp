@@ -568,6 +568,7 @@ std::string EqualExpr::to_string() {
  *      IfExpr
 *******************/
 
+
 //constructor
 IfExpr::IfExpr(PTR(Expr) input, PTR(Expr) then_input, PTR(Expr) else_input) {
     
@@ -594,7 +595,10 @@ bool IfExpr::equals(PTR(Expr) compared_against) {
 
 PTR(Val) IfExpr::interp(PTR(Env) env) {
     
-    if(test_input -> interp(env) ) {
+    PTR(Val) test_result = test_input -> interp(env);
+    PTR(BoolVal) casted_val = CAST(BoolVal)(test_result);
+    
+    if(casted_val != nullptr && casted_val -> input == true ) {
         return then_input -> interp(env);
     }
     
@@ -893,7 +897,9 @@ TEST_CASE("Interp") {
     SECTION("LetExpr") {
         CHECK( (NEW(LetExpr)("z",
                              NEW(NumExpr)(0),
-                             NEW(MultExpr)(NEW(VarExpr)("z"), NEW(NumExpr)(5) ) ) )
+                             NEW(MultExpr)(
+                                           NEW(VarExpr)("z"),
+                                           NEW(NumExpr)(5) ) ) )
               -> interp(Env::empty)
               -> equals(NEW(NumVal)(0)
                         ) );
@@ -939,20 +945,68 @@ TEST_CASE("Interp") {
     }
     
     SECTION("BoolExpr") {
-        CHECK( (NEW(BoolExpr)(true) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(true) ) );
-        CHECK( (NEW(BoolExpr)(false) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(false) ) );
+        CHECK( (NEW(BoolExpr)(true) )
+              -> interp(Env::empty)
+              -> equals( NEW(BoolVal)(true) ) );
+        CHECK( (NEW(BoolExpr)(false) )
+              -> interp(Env::empty)
+              -> equals( NEW(BoolVal)(false) ) );
     }
     
     SECTION("EqulExpr") {
-        CHECK( (NEW(EqualExpr)(NEW(MultExpr)(NEW(NumExpr)(5), NEW(NumExpr)(5) ), NEW(NumExpr)(25) ) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(true) ) );
-        CHECK( (NEW(EqualExpr)(NEW(MultExpr)(NEW(NumExpr)(5), NEW(NumExpr)(4) ), NEW(NumExpr)(25) ) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(false) ) );
-        CHECK( (NEW(EqualExpr)(NEW(AddExpr)(NEW(NumExpr)(5), NEW(NumExpr)(15) ), NEW(NumExpr)(20) ) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(true) ) );
-        CHECK( (NEW(EqualExpr)(NEW(MultExpr)(NEW(NumExpr)(5), NEW(NumExpr)(10) ), NEW(NumExpr)(20) ) ) -> interp(Env::empty) -> equals(NEW(BoolVal)(false) ) );
+        CHECK( (NEW(EqualExpr)(
+                               NEW(MultExpr)(
+                                             NEW(NumExpr)(5),
+                                             NEW(NumExpr)(5) ),
+                               NEW(NumExpr)(25) ) )
+              -> interp(Env::empty)
+              -> equals( NEW(BoolVal)(true) ) );
+        CHECK( (NEW(EqualExpr)(
+                               NEW(MultExpr)(
+                                             NEW(NumExpr)(5),
+                                             NEW(NumExpr)(4) ),
+                               NEW(NumExpr)(25) ) )
+              -> interp(Env::empty)
+              -> equals(NEW(BoolVal)(false) ) );
+        CHECK( (NEW(EqualExpr)(
+                               NEW(AddExpr)(
+                                            NEW(NumExpr)(5),
+                                            NEW(NumExpr)(15) ),
+                               NEW(NumExpr)(20) ) )
+              -> interp(Env::empty)
+              -> equals(NEW(BoolVal)(true) ) );
+        CHECK( (NEW(EqualExpr)(
+                               NEW(MultExpr)(
+                                             NEW(NumExpr)(5),
+                                             NEW(NumExpr)(10) ),
+                               NEW(NumExpr)(20) ) )
+              -> interp(Env::empty)
+              -> equals(NEW(BoolVal)(false) ) );
     }
     
     SECTION("IfExpr") {
-        CHECK( ( (NEW(IfExpr)(NEW(BoolExpr)(true), NEW(NumExpr)(5), NEW(VarExpr)("x") ) ) -> interp(Env::empty) -> equals(NEW(NumVal)(5) ) ) );
-        CHECK( ( (NEW(IfExpr)(NEW(BoolExpr)(false), NEW(NumExpr)(5), NEW(NumExpr)(15) ) ) -> interp(Env::empty) -> equals(NEW(NumVal)(5) ) ) );
+        CHECK( ( (NEW(IfExpr)(
+                              NEW(BoolExpr)(true),
+                              NEW(NumExpr)(5),
+                              NEW(VarExpr)("x") ) )
+                -> interp(Env::empty)
+                -> equals(NEW(NumVal)(5) ) ) );
+        
+        CHECK( ( (NEW(IfExpr)(
+                              NEW(BoolExpr)(false),
+                              NEW(NumExpr)(5),
+                              NEW(NumExpr)(15) ) )
+                -> interp(Env::empty)
+                -> equals(NEW(NumVal)(15) ) ) );
+        
+        CHECK( ( NEW(IfExpr)(
+                            NEW(EqualExpr)(
+                                           NEW(NumExpr)(15),
+                                           NEW(NumExpr)(25) ),
+                            NEW(NumExpr)(15),
+                            NEW(NumExpr)(25) ) )
+              -> interp(Env::empty)
+              -> equals( NEW(NumVal)(25) ) );
     }
     
     SECTION("FunExpr") {
