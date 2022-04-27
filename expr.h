@@ -139,13 +139,13 @@ class BoolExpr : public Expr {
 //        bool has_variable();
 };
 
-class EqulExpr : public Expr {
+class EqualExpr : public Expr {
     public:
         PTR(Expr) lhs;
         PTR(Expr) rhs;
 
         //constructor
-        EqulExpr(PTR(Expr) lhs, PTR(Expr) rhs);
+        EqualExpr(PTR(Expr) lhs, PTR(Expr) rhs);
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);

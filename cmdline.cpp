@@ -1,6 +1,7 @@
 #include "cmdline.h"
 #include "parse.h"
 #include "env.h"
+#include "val.h"
 
 #include <iostream>
 #include <string.h>
@@ -38,8 +39,8 @@ void use_arguments(int argc, char **argv) {
 
         else if(argvalue1.compare(interp) == 0) {
             PTR(Expr) input = parse(std::cin);
-            PTR(Val) interpretedInput = input -> interp(Env::empty);
-            std::cout << interpretedInput << std::endl; 
+            std::string interpretedInput = input -> interp(Env::empty) -> to_string();
+            std::cout << interpretedInput << std::endl;
             exit(0);
         }
 
@@ -63,7 +64,7 @@ void use_arguments(int argc, char **argv) {
         }
     }
 
-    if(argc == 3) {
+    else {
         
         std::string argvalue2 = argv[2];
 

@@ -40,104 +40,83 @@ int main(int argc, char **argv) {
     
     const char * const interp_argv[] = { argv[1], "--interp" };
     const char * const print_argv[] = { argv[1], "--print" };
-    
-    const char * const interp_argv2[] = { argv[2], "--interp" };
-    const char * const print_argv2[] = { argv[2], "--print" };
-    
-    std::string in = random_expr_string();
-    
-    ExecResult interp_result = exec_program(2, interp_argv, in);
-    ExecResult print_result = exec_program(2, print_argv, in);
-    ExecResult interp_again_result = exec_program(2, interp_argv, print_result.out);
-    
-    ExecResult interp_result2 = exec_program(2, interp_argv, in);
-    ExecResult print_result2 = exec_program(2, print_argv, in);
-    ExecResult interp_again_result2 = exec_program(2, interp_argv, print_result.out);
-    
-    if(argc == 2) {
+    const char * const pretty_print_argv[] = { argv[1], "--pretty-print" };
 
-        for(int i = 0; i < 100; i++) {
+    for(int i = 0; i < 100; i++) {
+        
+        // Generate random input and run print + interp
+        std::string in = random_expr_string();
+        std::cout << "Trying " << i + 1 << " " << in << "\n";
+        ExecResult interp_result = exec_program(2, interp_argv, in);
+        ExecResult print_result = exec_program(2, print_argv, in);
+        
+        if (argc == 2) {
+            ExecResult second_interp_result = exec_program(2, interp_argv, print_result.out);
             
-            std::cout << "Trying " << i + 1 << in << "\n";
+            if (interp_result.out.compare(second_interp_result.out) != 0) {
+                throw std::runtime_error("Different result for --print\n");
+            }
+        } else if (argc == 3) {
+            const char * const different_interp_argv[] = { argv[2], "--interp" };
+            const char * const different_print_argv[] = { argv[2], "--print" };
             
-            if(interp_again_result.exit_code == 0 && interp_result.exit_code == 0) {
-                
-                if (interp_again_result.out != interp_result.out)
-                    
-                    compare(argc, argv, interp_result, interp_again_result);
-                    throw std::runtime_error("Different result for printed \n");
+            ExecResult different_interp_result = exec_program(2, different_interp_argv, in);
+            ExecResult different_print_result = exec_program(2, different_print_argv, in);
+            
+            if (print_result.out.compare(different_print_result.out) != 0) {
+                throw std::runtime_error("Different result for --print\n");
             }
             
-            interp_again_result = exec_program(2, interp_argv, print_result.out);
-            
-            if(interp_again_result.out != interp_result.out) {
-                
-                compare(argc, argv, interp_result, interp_again_result);
-                throw std::runtime_error("Different result for printed \n");
+            if (interp_result.out.compare(different_interp_result.out) != 0) {
+                throw std::runtime_error("Different result for --interp\n");
             }
-            
-            else {
-                std::cerr << "Program Exited With Error \n";
-                return 1;
-            }
+        } else {
+            throw std::runtime_error("Too many command line arguments");
         }
     }
     
-    else if(argc == 3) {
-        
-        for(int i = 0; i < 100; i++) {
-            
-            std::cout << "Trying " << i + 1 << in << "\n";
-
-            if(interp_result.exit_code == 0 && interp_result2.exit_code == 0) {
-                
-                if(interp_result.out != interp_result2.out) {
-                    
-                    compare(argc, argv, print_result, print_result2);
-                    throw std::runtime_error("Different result for interpret \n");
-                }
-                
-                else if (print_result.out != print_result2.out) {
-                    
-                    compare(argc, argv, print_result, print_result2);
-                    throw std::runtime_error("Different result for interpret \n");
-                }
-                
-                else {
-                    std::cerr << "Program Exited With Error \n";
-                    return 1;
-                }
-            }
-        }
-    }
-    
-    else {
-        std::cerr << "Error: No Program Names Entered" << std::endl;
-        return 1;
-        
-    }
-    
-    std::cout << "Tests Passed Successfully \n";
     return 0;
 }
 
 //Generates random Expressions to be tested
 std::string random_expr_string() {
     
-    int test = rand() % 10;
+    int test = rand() % 100;
     
-    if (test < 6)
-        return std::to_string(test);
+    if (test < 10)
+        return std::to_string(rand());
     
-    else if (test < 8) {
-        return random_expr_string() + "+" + random_expr_string();
+    if (test < 20)
+        return "-" + std::to_string(rand());
+    
+    if (test < 30)
+        return "_true";
+    
+    if (test < 40)
+        return "_false";
+    
+    if (test < 50) {
+        return random_expr_string() + " + " + random_expr_string();
     }
     
-    else if (test < 10) {
-        return random_expr_string() + "*" + random_expr_string();
+    if (test < 60) {
+        return random_expr_string() + " * " + random_expr_string();
     }
     
-    else {
-        return std::to_string(test);
+    if (test < 70) {
+        return "x";
     }
+    
+    if (test < 80) {
+        return "_let x = " + random_expr_string() + " _in " + random_expr_string();
+    }
+    
+    if (test < 90) {
+        return "_if " + random_expr_string() + " _then " + random_expr_string() + " _else " + random_expr_string();
+    }
+    if (test < 100) {
+        return random_expr_string() + " == " + random_expr_string();
+    }
+    
+    return std::to_string(rand());
 }

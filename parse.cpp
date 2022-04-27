@@ -31,7 +31,7 @@ void consume(std::istream& input, char expect) {
         c = input.get();
     }
     else {
-        throw std::runtime_error("invalid input");
+        throw std::runtime_error("Invalid Input");
     }
     
 }
@@ -53,12 +53,12 @@ PTR(Expr) parse_fun(std::istream& input) {
          consume(input, '(');
          skip_whitespace(input);
          
-         formal_arg = parse_var(input) -> to_string();
+         formal_arg = var_helper(input);
          skip_whitespace(input);
          int c = input.get();
          
-         if (c!= ')'){
-             throw std::runtime_error("invalid input");
+         if (c != ')'){
+             throw std::runtime_error("Invalid Input");
          }
      }
     
@@ -82,8 +82,8 @@ PTR(Expr) parse_helper (std::istream& input) {
         skip_whitespace(input);
         c = input.get();
         
-        if (c!= ')'){
-            throw std::runtime_error("invalid input");
+        if (c != ')'){
+            throw std::runtime_error("Invalid Input");
         }
         
         return e;
@@ -96,33 +96,33 @@ PTR(Expr) parse_helper (std::istream& input) {
         
         std::string kw = parse_keyword(input);
         
-        if(kw == "_let"){
+        if(kw.compare("_let") == 0){
             return parse_let(input);
         }
         
-        else if (kw == "_true"){
+        else if (kw.compare("_true") == 0){
             return NEW(BoolExpr)(true);
         }
         
-        else if (kw == "_false"){
+        else if (kw.compare("_false") == 0){
             return NEW(BoolExpr)(false);
         }
         
-        else if (kw == "_if"){
+        else if (kw.compare("_if") == 0){
             return parse_if(input);
         }
         
-        else if (kw == "_fun"){
+        else if (kw.compare("_fun") == 0){
             return parse_fun(input);
         }
         
         else {
-            throw std::runtime_error("invalid input");
+            throw std::runtime_error("Invalid Input");
         }
     }
     
     else {
-        throw std::runtime_error("invalid input");
+        throw std::runtime_error("Invalid Input");
     }
     
 }
@@ -141,14 +141,14 @@ std::string var_helper(std::istream& input) {
     skip_whitespace(input);
 
     if(input.peek() == '-') {
-        throw std::runtime_error("invalid input");
+        throw std::runtime_error("Invalid Input");
     }
     
     while(1) {
         char c = input.peek();
         
         if (c == '_') {
-            throw std::runtime_error("invalid input");
+            throw std::runtime_error("Invalid Input");
         }
         
         else if(!isalpha(c)) {
@@ -202,10 +202,10 @@ PTR(Expr) parse_expr(std::istream& input) {
            consume(input, '=');
             PTR(Expr) rhs = parse_expr(input);
            
-            return NEW(EqulExpr)(e, rhs);
+            return NEW(EqualExpr)(e, rhs);
         }
         else {
-            throw std::runtime_error("invalid input");
+            throw std::runtime_error("Invalid Input");
         }
     }
     else {
@@ -230,8 +230,6 @@ static std::string parse_keyword(std::istream& input) {
                 c = input.get();
                 
                 if(c == 't') {
-                    c = input.get();
-
                     return "_let";
                 }
             }
@@ -251,11 +249,18 @@ static std::string parse_keyword(std::istream& input) {
                         c = input.get();
                         
                         if(c == 'e') {
-                            c = input.get();
-                            
                             return "_false";
                         }
                     }
+                }
+            }
+            
+            //check for _fun
+            else if(c == 'u') {
+                c = input.get();
+                
+                if(c == 'n') {
+                    return "_fun";
                 }
             }
         }
@@ -271,9 +276,20 @@ static std::string parse_keyword(std::istream& input) {
                     c = input.get();
                     
                     if(c == 'e') {
-                        c = input.get();
-                        
                         return "_true";
+                    }
+                }
+            }
+            
+            //check for _then
+            else if(c == 'h') {
+                c = input.get();
+                
+                if(c == 'e') {
+                    c = input.get();
+
+                    if(c == 'n') {
+                        return "_then";
                     }
                 }
             }
@@ -284,14 +300,33 @@ static std::string parse_keyword(std::istream& input) {
             c = input.get();
             
             if(c == 'n') {
-                c = input.get();
-  
                 return "_in";
+            }
+            
+            else if(c == 'f') {
+                return "_if";
+            }
+        }
+        
+        //check for _else
+        else if(c == 'e') {
+            c = input.get();
+            
+            if(c == 'l') {
+                c = input.get();
+                
+                if(c == 's') {
+                    c = input.get();
+
+                    if(c == 'e') {
+                        return "_else";
+                    }
+                }
             }
         }
         
         else {
-            throw std::runtime_error("invalid input");
+            throw std::runtime_error("Invalid Input");
         }
     }
     
@@ -301,7 +336,7 @@ static std::string parse_keyword(std::istream& input) {
     }
     
     else {
-        throw std::runtime_error("invalid input");
+        throw std::runtime_error("Invalid Input");
     }
 }
 
@@ -333,7 +368,7 @@ PTR(Expr) parse_num(std::istream& input) {
     
     if(negative) {
         if (n == 0) {
-            throw std::runtime_error("invalid input");
+            throw std::runtime_error("Invalid Input");
         }
         n = -n;
     }
@@ -357,32 +392,27 @@ PTR(Expr) parse_let(std::istream& input) {
     PTR(Expr) rhs;
     PTR(Expr) body;
     skip_whitespace(input);
+    
+    lhs = var_helper(input);
+    skip_whitespace(input);
 
-    if(parse_keyword(input).compare("_let") == 0) {
+    if(parse_keyword(input).compare("=") == 0) {
         skip_whitespace(input);
-        std::string outputVar = var_helper(input);
-        lhs = outputVar;
+        rhs = parse_expr(input);
+        skip_whitespace(input);
+    }
+    else {
+        throw std::runtime_error("Invalid Input");
     }
     
-    else {
-        throw std::runtime_error("invalid input");
-    }
+    skip_whitespace(input);
     
     if(parse_keyword(input).compare("_in") == 0) {
         skip_whitespace(input);
         body = parse_expr(input);
     }
-    
     else {
-        throw std::runtime_error("invalid input");
-    }
-
-    if(parse_keyword(input).compare("=") == 0) {
-        rhs = parse_expr(input);
-    }
-    
-    else {
-        throw std::runtime_error("invalid input");
+        throw std::runtime_error("Invalid Input");
     }
     
     return NEW(LetExpr)(lhs, rhs, body);
@@ -412,78 +442,294 @@ PTR(Expr) parse_addend(std::istream& input) {
 
 PTR(Expr) parse_multicand(std::istream& input) {
 
+    
+    PTR(Expr) e;
+    PTR(Expr) actual_arg;
+    
+    e = parse_helper(input);
+    
     skip_whitespace(input);
-    PTR(Expr) e = parse_helper(input);
+    
+    if (input.peek() == '(') {
+        consume(input, '(');
+        actual_arg = parse_expr(input);
+        consume(input, ')');
+        e = NEW (CallExpr)(e, actual_arg);
+    }
+    
+    skip_whitespace(input);
     
     return e;
 }
 
-
 PTR(Expr) parse_if(std::istream& input) {
+    
+    PTR(Expr) test_expr;
+    PTR(Expr) then_expr;
+    PTR(Expr) else_expr;
    
     skip_whitespace(input);
-    PTR(Expr) test_input = parse_expr(input);
-    int c = input.peek();
-
-    if(parse_keyword(input) != "_then") {
-        throw std::runtime_error("invalid input");
+    test_expr = parse_expr(input);
+    skip_whitespace(input);
+    
+    if(parse_keyword(input).compare("_then") == 0) {
+        skip_whitespace(input);
+        then_expr = parse_expr(input);
+    }
+    else {
+        throw std::runtime_error("Invalid Input");
     }
     
     skip_whitespace(input);
-    PTR(Expr) then_input = parse_expr(input);
-    skip_whitespace(input);                                   //CHECK: TWO?
-    c = input.peek();
     
-    if(parse_keyword(input) != "_else") {
-        throw std::runtime_error("invalid input");
+    if(parse_keyword(input).compare("_else") == 0) {
+        skip_whitespace(input);
+        else_expr = parse_expr(input);
+    }
+    else {
+        throw std::runtime_error("Invalid Input");
     }
     
-    PTR(Expr) else_input = parse_expr(input);
-    
-    return NEW(IfExpr)(test_input, then_input, else_input); 
+    return NEW(IfExpr)(test_expr, then_expr, else_expr);
 }
 
 
 /******************
 TESTS
 *******************/
-TEST_CASE("parse") {
-    SECTION("_false") {
-        CHECK(parse_str("_false") -> equals(NEW(BoolExpr)(false)));
+TEST_CASE("Parser") {
+    
+    SECTION("Invalid Input") {
+        CHECK_THROWS_WITH( parse_str("()"), "Invalid Input" );
+        CHECK_THROWS_WITH( parse_str("(1"), "Invalid Input" );
+        CHECK_THROWS_WITH( parse_str(" -   5  "), "Invalid Input" );
+        CHECK_THROWS_WITH( parse_str("x_z"), "Invalid Input" );
+        CHECK_THROWS_WITH( parse_str("-"), "Invalid Input" );
     }
     
-    SECTION("invalid input") {
-        CHECK_THROWS_WITH( parse_str("()"), "invalid input" );
-        CHECK_THROWS_WITH( parse_str("(1"), "invalid input" );
+    SECTION("NumExpr") {
+        CHECK( parse_str("1") -> equals(NEW(NumExpr)(1)) );
+        CHECK( parse_str("10") -> equals(NEW(NumExpr)(10) ) );
+        CHECK( parse_str("-3") -> equals(NEW(NumExpr)(-3) ) );
+        CHECK( parse_str("  \n 5  ") -> equals(NEW(NumExpr)(5) ) );
+        CHECK( parse_str("(1)") -> equals(NEW(NumExpr)(1) ) );
+        CHECK( parse_str("(((1)))") -> equals(NEW(NumExpr)(1) ) );
     }
-  
-  CHECK( parse_str("(1)") -> equals(NEW(NumExpr)(1) ) );
-  CHECK( parse_str("(((1)))") -> equals(NEW(NumExpr)(1) ) );
-  
-  
-  CHECK( parse_str("1") -> equals(NEW(NumExpr)(1)) );
-  CHECK( parse_str("10") -> equals(NEW(NumExpr)(10) ) );
-  CHECK( parse_str("-3") -> equals(NEW(NumExpr)(-3) ) );
-  CHECK( parse_str("  \n 5  ") -> equals(NEW(NumExpr)(5) ) );
-  CHECK_THROWS_WITH( parse_str("-"), "invalid input" );
+    
+    SECTION("VarExpr") {
+        CHECK( parse_str("x") -> equals(NEW(VarExpr)("x") ) );
+        CHECK( parse_str("xyz") -> equals(NEW(VarExpr)("xyz") ) );
+        CHECK( parse_str("xYz") -> equals(NEW(VarExpr)("xYz") ) );
+        CHECK( parse_str("then") -> equals(NEW(VarExpr)("then") ) );
+    }
+    
+    SECTION("AddExpr") {
+        CHECK( parse_str("x + y") -> equals(NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
+        CHECK( parse_str("z * x + y")
+            -> equals(NEW(AddExpr)(NEW(MultExpr)(NEW(VarExpr)("z"), NEW(VarExpr)("x") ),
+                                  NEW(VarExpr)("y") ) ) );
+    }
+    
+    SECTION("MultExpr") {
+        CHECK( parse_str("x * y") -> equals(NEW(MultExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
+        CHECK( parse_str("z * (x + y)")
+              -> equals(NEW(MultExpr)(NEW(VarExpr)("z"),
+                                     NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) ) );
+    }
+    
+    SECTION("BoolExpr") {
+        CHECK(parse_str("_false") -> equals(NEW(BoolExpr)(false)));
+        CHECK(parse_str("_true") -> equals(NEW(BoolExpr)(true)));
+    }
+    
+    SECTION("LetExpr") {
+        CHECK( parse_str("_let x = _false _in x + 5")
+                  -> equals( NEW(LetExpr)(
+                                          "x",
+                                          NEW(BoolExpr)(false),
+                                          NEW(AddExpr)(
+                                                       NEW(VarExpr)("x"),
+                                                       NEW(NumExpr)(5)
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let y = _true _in y")
+                  -> equals( NEW(LetExpr)(
+                                          "y",
+                                          NEW(BoolExpr)(true),
+                                          NEW(VarExpr)("y")
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let x = 20 _in x + 50")
+                  -> equals( NEW(LetExpr)(
+                                          "x",
+                                          NEW(NumExpr)(20),
+                                          NEW(AddExpr)(
+                                                       NEW(VarExpr)("x"),
+                                                       NEW(NumExpr)(50)
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let y = 255 _in y + y")
+                  -> equals( NEW(LetExpr)(
+                                          "y",
+                                          NEW(NumExpr)(255),
+                                          NEW(AddExpr)(
+                                                       NEW(VarExpr)("y"),
+                                                       NEW(VarExpr)("y")
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let z = 5 _in z * z")
+                  -> equals( NEW(LetExpr)(
+                                          "z",
+                                          NEW(NumExpr)(5),
+                                          NEW(MultExpr)(
+                                                       NEW(VarExpr)("z"),
+                                                       NEW(VarExpr)("z")
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let w = 10 _in w * 10")
+                  -> equals( NEW(LetExpr)(
+                                          "w",
+                                          NEW(NumExpr)(10),
+                                          NEW(MultExpr)(
+                                                       NEW(VarExpr)("w"),
+                                                       NEW(NumExpr)(10)
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_let v = 5 _in _let u = 10 _in v * 5")
+                  -> equals( NEW(LetExpr)(
+                                          "v",
+                                          NEW(NumExpr)(5),
+                                          NEW(LetExpr)("u",
+                                                       NEW(NumExpr)(10),
+                                                       NEW(MultExpr)(
+                                                                    NEW(VarExpr)("v"),
+                                                                    NEW(NumExpr)(5)
+                                                                    )
+                                                       )
+                                          )
+                            )
+              );
+            
+            
+    }
+    
+    SECTION("IfExpr") {
+        CHECK( parse_str("_if _false _then 1 _else 2")
+                  -> equals( NEW(IfExpr)(
+                                         NEW(BoolExpr)(false),
+                                         NEW(NumExpr)(1),
+                                         NEW(NumExpr)(2)
+                                         )
+                            )
+              );
+        CHECK( parse_str("_if _true _then 1 _else 2")
+                  -> equals( NEW(IfExpr)(
+                                         NEW(BoolExpr)(true),
+                                         NEW(NumExpr)(1),
+                                         NEW(NumExpr)(2)
+                                         )
+                            )
+              );
+        CHECK( parse_str("_if _true _then 5 _else x")
+                  -> equals( NEW(IfExpr)(
+                                         NEW(BoolExpr)(true),
+                                         NEW(NumExpr)(5),
+                                         NEW(VarExpr)("x")
+                                         )
+                            )
+              );
+        CHECK( parse_str("_if 5 + 15 == 25 _then _true _else _false")
+                  -> equals( NEW(IfExpr)(
+                                         NEW(EqualExpr)(
+                                                        NEW(AddExpr)(
+                                                                     NEW(NumExpr)(5),
+                                                                     NEW(NumExpr)(15)),
+                                                        NEW(NumExpr)(25)),
+                                         NEW(BoolExpr)(true),
+                                         NEW(BoolExpr)(false)
+                                         )
+                            )
+              );
+        CHECK( parse_str("_if 15 + 15 == 30 _then _true _else _false")
+                  -> equals( NEW(IfExpr)(
+                                         NEW(EqualExpr)(
+                                                        NEW(AddExpr)(
+                                                                     NEW(NumExpr)(15),
+                                                                     NEW(NumExpr)(15)),
+                                                        NEW(NumExpr)(30)),
+                                         NEW(BoolExpr)(true),
+                                         NEW(BoolExpr)(false)
+                                         )
+                            )
+              );
+    }
+    
+    SECTION("EqualExpr") {
+
+    }
+    
+    SECTION("FunExpr") {
+        CHECK( parse_str("_fun (x) y + 25")
+                  -> equals( NEW(FunExpr)(
+                                          "x",
+                                          NEW(AddExpr)(
+                                                       NEW(VarExpr)("y"),
+                                                       NEW(NumExpr)(25)
+                                                       )
+                                          )
+                            )
+              );
+        CHECK( parse_str("_fun (z) z + 15")
+                  -> equals( NEW(FunExpr)(
+                                          "z",
+                                          NEW(AddExpr)(
+                                                        NEW(VarExpr)("z"),
+                                                        NEW(NumExpr)(15)
+                                                        )
+                                          )
+                            )
+              );
+        CHECK( parse_str("(_fun (w) w + 20) (5)")
+              -> equals( NEW(CallExpr)(
+                                       NEW(FunExpr)(
+                                                    "w",
+                                                    NEW(AddExpr)(
+                                                                 NEW(VarExpr)("w"),
+                                                                 NEW(NumExpr)(20)
+                                                                 )
+                                                    ),
+                                       NEW(NumExpr)(5)
+                                       )
+                        )
+              );
+        
+        CHECK( parse_str("(_fun (w) x + y) (5)")
+              -> equals( NEW(CallExpr)(
+                                       NEW(FunExpr)(
+                                                    "w",
+                                                    NEW(AddExpr)(
+                                                                 NEW(VarExpr)("x"),
+                                                                 NEW(VarExpr)("y")
+                                                                 )
+                                                    ),
+                                       NEW(NumExpr)(5)
+                                       )
+                        )
+              );
+    }
+
   // This was some temporary debugging code:
   //  std::istringstream in("-");
   //  parse_num(in) -> print(std::cout); std::cout << "\n";
-  
-  CHECK_THROWS_WITH( parse_str(" -   5  "), "invalid input" );
-  
-  CHECK( parse_str("x") -> equals(NEW(VarExpr)("x") ) );
-  CHECK( parse_str("xyz") -> equals(NEW(VarExpr)("xyz") ) );
-  CHECK( parse_str("xYz") -> equals(NEW(VarExpr)("xYz") ) );
-  CHECK_THROWS_WITH( parse_str("x_z"), "invalid input" );
-  
-  CHECK( parse_str("x + y") -> equals(NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
-  CHECK( parse_str("x * y") -> equals(NEW(MultExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) );
-    CHECK( parse_str("z * x + y")
-        -> equals(NEW(AddExpr)(NEW(MultExpr)(NEW(VarExpr)("z"), NEW(VarExpr)("x") ),
-                              NEW(VarExpr)("y") ) ) );
-
-  CHECK( parse_str("z * (x + y)")
-        -> equals(NEW(MultExpr)(NEW(VarExpr)("z"),
-                               NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y") ) ) ) );
 }

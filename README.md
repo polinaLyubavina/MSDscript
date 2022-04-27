@@ -101,3 +101,41 @@ This will run the program and execute any commands you pass to it
     - 15 == 15
     - _true == _false 
     - _true == _true
+
+## Cmdline 
+-----
+
+* --help
+* --print
+* --pretty-print
+* --interp
+* --test
+* 'Ctrl+D'
+    - to submit input
+    
+## Files
+-----
+
+Files included in the MSDScript:
+
+- main.cpp
+- cmdline.cpp & cmdline.h
+    - contain everything necessary for the commandline arguments to function
+- expr.cpp & expr.h
+    - used for expression classes
+- parse.cpp & parse.h
+    - used for parsing
+- val.cpp & val.h
+    - used for values
+- pointer.h
+    - used for regular and shared pointers
+- test_msdscript
+    - tests the program against itself or two programs against each other
+- exec.cpp & exec.h
+    - used for test_msdscript 
+- env.cpp & env.h
+    - environment variables
+- Makefile
+    - used to compile program
+- catch.h
+    - used to run tests

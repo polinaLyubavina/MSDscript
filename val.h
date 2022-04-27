@@ -17,7 +17,6 @@ CLASS(Val) {
         virtual PTR(Expr) to_expr() = 0;
         virtual PTR(Val) call(Val* actual_argument) = 0;
         virtual PTR(Val) mult_to(Val* input) = 0;
-//        virtual Val* interp() = 0;
         virtual std::string to_string() = 0;
 
 };
@@ -35,7 +34,6 @@ class NumVal : public Val {
         PTR(Val) call(PTR(Val) actual_argument);
         PTR(Val) mult_to(PTR(Val) input);
         std::string to_string();
-//        Val* interp();
 };
 
 class BoolVal : public Val {
@@ -51,7 +49,6 @@ class BoolVal : public Val {
         PTR(Val) call(PTR(Val) actual_argument);
         PTR(Val) mult_to(PTR(Val) input);
         std::string to_string();
-//        Val* interp();
 };
 
 class FunVal : public Val {
@@ -69,5 +66,4 @@ class FunVal : public Val {
         PTR(Val) call(PTR(Val) actual_argument);
         PTR(Val) mult_to(PTR(Val) input);
         std::string to_string();
-//        Val* interp();
 };
