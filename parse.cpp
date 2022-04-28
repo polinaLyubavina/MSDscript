@@ -441,24 +441,21 @@ PTR(Expr) parse_addend(std::istream& input) {
 
 
 PTR(Expr) parse_multicand(std::istream& input) {
-
     
     PTR(Expr) e;
     PTR(Expr) actual_arg;
-    
     e = parse_helper(input);
-    
     skip_whitespace(input);
     
-    if (input.peek() == '(') {
+    while (input.peek() == '(') {
         consume(input, '(');
+        skip_whitespace(input);
         actual_arg = parse_expr(input);
+        skip_whitespace(input);
         consume(input, ')');
         e = NEW (CallExpr)(e, actual_arg);
     }
-    
-    skip_whitespace(input);
-    
+            
     return e;
 }
 
