@@ -10,10 +10,13 @@
 
 typedef enum {
     prec_none,      // = 0
-    prec_bool,      // = 1  ==
+    prec_bool,      // = 1
     prec_add,       // = 2  +
     prec_mult,      // = 3  *
-    prec_let        // = 4
+    prec_let,       // = 4
+    prec_if,        //5
+    prec_fun,       //6
+    prec_equal      //7
 } precedence_t;
 
 class Val;
@@ -26,11 +29,9 @@ CLASS(Expr) {
         virtual bool equals(PTR(Expr) compared_against) = 0;
         virtual PTR(Val) interp(PTR(Env) env) = 0;
         virtual std::string to_string() = 0;
-        virtual PTR(Expr) subst(std::string var, PTR(Expr) substitute) = 0;
         virtual void print(std::ostream& output) = 0;
-//        virtual void pretty_print(std::ostream& output) = 0;
-//        virtual precedence_t pretty_print_at() = 0;
-//        virtual bool has_variable() = 0;
+        virtual void pretty_print(std::ostream& output) = 0;
+        virtual void pretty_print_at(std::ostream& out, int precedence) = 0;
 };
 
 class NumExpr : public Expr {
@@ -42,12 +43,10 @@ class NumExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class AddExpr : public Expr {
@@ -60,12 +59,10 @@ class AddExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class MultExpr : public Expr {
@@ -78,12 +75,10 @@ class MultExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class VarExpr : public Expr {
@@ -95,13 +90,10 @@ class VarExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
-
 };
 
 class LetExpr : public Expr {
@@ -113,13 +105,11 @@ class LetExpr : public Expr {
         //constructor
         LetExpr(std::string lhs, PTR(Expr) rhs, PTR(Expr) body);
         
-//        bool has_variable();
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
 };
 
@@ -132,12 +122,10 @@ class BoolExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class EqualExpr : public Expr {
@@ -150,12 +138,10 @@ class EqualExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class IfExpr : public Expr {
@@ -169,12 +155,10 @@ class IfExpr : public Expr {
         
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
-//        bool has_variable();
 };
 
 class FunExpr : public Expr {
@@ -187,10 +171,9 @@ class FunExpr : public Expr {
     
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
 };
 
@@ -202,12 +185,10 @@ class CallExpr : public Expr {
         //constructor
         CallExpr(PTR(Expr) to_be_called, PTR(Expr) actual_arg);
     
-//        bool has_variable();
         bool equals(PTR(Expr) compared_against);
         PTR(Val) interp(PTR(Env) env);
-        PTR(Expr) subst(std::string var, PTR(Expr) substitute);
         void print(std::ostream& output);
         void pretty_print(std::ostream& output);
-        precedence_t pretty_print_at();
+        void pretty_print_at(std::ostream& out, int precedence);
         std::string to_string();
 };

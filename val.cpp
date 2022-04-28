@@ -150,10 +150,11 @@ std::string BoolVal::to_string() {
  *      FunVal
 *******************/
 
-FunVal::FunVal(std::string formal_arg, PTR(Expr) body) {
+FunVal::FunVal(std::string formal_arg, PTR(Expr) body, PTR(Env) env) {
     
     this -> formal_arg = formal_arg;
     this -> body = body;
+    this -> env = env;
     
 }
 
@@ -196,7 +197,7 @@ PTR(Val) FunVal::mult_to(PTR(Val) input) {
 
 PTR(Val) FunVal::call(PTR(Val) actual_argument) {
     
-    return body -> interp(NEW(ExtendedEnv)(formal_arg, actual_argument, env));
+    return body -> interp(NEW(ExtendedEnv)(this -> formal_arg, actual_argument, this -> env));
     
 }
 
@@ -309,37 +310,37 @@ TEST_CASE("Val") {
         
         SECTION("FunVal equals()") {
             
-            CHECK( ( NEW(FunVal)("x", NEW(NumExpr)(15) ) )
-                  -> equals( NEW(FunVal)("x", NEW(NumExpr)(15) ) ) );
+            CHECK( ( NEW(FunVal)("x", NEW(NumExpr)(15), Env::empty) )
+                  -> equals( NEW(FunVal)("x", NEW(NumExpr)(15), Env::empty) ) );
             
-            CHECK( ! (NEW(FunVal)("x", NEW(NumExpr)(25) ) )
-                  -> equals(NEW(FunVal)("y", NEW(NumExpr)(25) ) ) );
+            CHECK( ! (NEW(FunVal)("x", NEW(NumExpr)(25), Env::empty ) )
+                  -> equals(NEW(FunVal)("y", NEW(NumExpr)(25), Env::empty ) ) );
             
-            CHECK( ! ( NEW(FunVal)("y", NEW(NumExpr)(15) ) )
-                  -> equals( NEW(FunVal)("y", NEW(NumExpr)(20) ) ) );
+            CHECK( ! ( NEW(FunVal)("y", NEW(NumExpr)(15), Env::empty ) )
+                  -> equals( NEW(FunVal)("y", NEW(NumExpr)(20), Env::empty ) ) );
         }
         
         SECTION("FunVal mult_to()") {
             
-            CHECK_THROWS_WITH( ( NEW(FunVal)("y", NEW(NumExpr)(15) ) )
+            CHECK_THROWS_WITH( ( NEW(FunVal)("y", NEW(NumExpr)(15), Env::empty ) )
                               -> mult_to( NEW(NumVal)(15) ), "Invalid input");
         }
         
         SECTION("FunVal add_to()") {
             
-            CHECK_THROWS_WITH( ( NEW(FunVal)("z", NEW(NumExpr)(20) ) )
+            CHECK_THROWS_WITH( ( NEW(FunVal)("z", NEW(NumExpr)(20), Env::empty ) )
                               -> add_to( NEW(NumVal)(20) ), "Invalid input");
         }
         
         SECTION("FunVal to_string()") {
             
-            CHECK( ( NEW(FunVal)("y", NEW(NumExpr)(15) ) )
+            CHECK( ( NEW(FunVal)("y", NEW(NumExpr)(15), Env::empty ) )
                   -> to_string() == "_fun (y) 15" );
         }
         
         SECTION("FunVal to_expr()") {
             
-            CHECK( ( NEW(FunVal)("z", NEW(NumExpr)(5) ) )
+            CHECK( ( NEW(FunVal)("z", NEW(NumExpr)(5), Env::empty ) )
                   ->to_expr()
                   ->equals( NEW(FunExpr)("z", NEW(NumExpr)(5) ) ) );
         }

@@ -59,7 +59,7 @@ class FunVal : public Val {
         PTR(Env) env;
     
         //constructor
-        FunVal(std::string formal_arg, PTR(Expr) body);
+        FunVal(std::string formal_arg, PTR(Expr) body, PTR(Env) env);
     
         bool equals(PTR(Val) input);
         PTR(Val) add_to(PTR(Val) input);

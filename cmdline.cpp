@@ -17,7 +17,7 @@
     std::string test = "--test"; 
     std::string interp = "--interp";
     std::string print = "--print";
-//    std::string pretty_print = "--pretty-print";
+    std::string pretty_print = "--pretty-print";
 
     std::string allowed_arguments = "Allowed arguments:\n --test\n --help\n --interp\n --print\n";
 
@@ -51,12 +51,12 @@ void use_arguments(int argc, char **argv) {
             exit(0);
         }
 
-//        else if(argvalue1.compare(pretty_print) == 0) {
-//            Expr* input = parse(std::cin);
-//            input -> pretty_print(std::cout);
-//            std::cout << std::endl;
-//            exit(0);
-//        }
+        else if(argvalue1.compare(pretty_print) == 0) {
+            PTR(Expr) input = parse(std::cin);
+            input -> pretty_print(std::cout);
+            std::cout << std::endl;
+            exit(0);
+        }
 
         else {
             std::cerr << "Error \n";
