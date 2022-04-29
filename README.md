@@ -90,19 +90,20 @@ The MSDscript contains Expressions and Values. They are different. Expressions a
     - 5 * -5
     - 5 * (-5)
 
-- Let Expressions
+- Let 
+  - Let can assign a value to a variable. 
   - Use the following format: `_let` (variable) = (expression) `_in` (expression)
   - Example
     - _let x = 5 _in x + 15
 
-- Boolean Expressions
+- Booleans
   - Use the keywords: `_true` or `_false`
   - Do not use false or true, 1 or 0
   - Examples
     - _true
     - _false
 
-- If/Else Expressions
+- If/Else 
   - Use the keywords: `_if` (expression with a boolean value) `_then` (expression) `_else` (expression)
   - A `_` must be in front of the keywords
   - Place a boolean expression after the `_if`, otherwise the program will throw an error
@@ -110,7 +111,7 @@ The MSDscript contains Expressions and Values. They are different. Expressions a
     - _if _false _then 5 _else 20
     - _if 15 == 15 _then 15 _else 5
 
-- Equivalence Expressions
+- Equality 
   - Use the `==` for which the MSDscript will return a Boolean Expression
   - The` ==` can work on any value, such as booleans, numbers and variables, etc.
   - A Boolean Expression can be equal to a Boolean Expression if their Values are equal. Similarly, a Numerical Expression can be equal to a Numerical Expression if their Values are equal.
@@ -119,11 +120,17 @@ The MSDscript contains Expressions and Values. They are different. Expressions a
     - _true == _false 
     - _true == _true
 
-- Fun Expr
-  - Fun Exprs represent a function in the MSDscript. 
-  - The Fun Expr has an argument that is passed to it as a string, and an Expr that makes up the body of the function.
+- Functions
+  - Functions are values in the same way that a Boolean or a Number is a value. 
+  - Functions can be used with a `_fun` keyword and include the input within paranthesis. The funciton body is just outside the input's paranthesis.
+  - Functions take an argument that is passed to them as a string, and an Expr that makes up the body of the function.
   - Example
     - `_fun` (expression) (expression)
+    
+- Function Calls
+  - Calls represents a call to a function and use a function value, so include a value you would like to pass. 
+  - Example
+    - `(_fun (x) x + 5) (5)` returns the value of `10`
     
     
 ## API Documentation
